@@ -117,38 +117,41 @@ value reine_etat_to_val(const reine_etat *etat) {
     CAMLparam0();
     CAMLlocal5(res, nourriture, result, max_nourriture, max_eau);
     CAMLlocal5(max_vie, max_degats, duree_amelioration, max_stockage, max_production);
-    CAMLlocal1(max_envoi);
-    res = caml_alloc(10, 0);
+    CAMLlocal2(team_id, max_envoi);
+    res = caml_alloc(11, 0);
 
     nourriture = Val_int(etat->nourriture);
     Store_field(res, 0, nourriture);
 
+	team_id = Val_int(etat->team_id);
+	Store_field(res, 1, team_id);
+
     result = Val_int(etat->result);
-    Store_field(res, 1, result);
+    Store_field(res, 2, result);
 
     max_nourriture = Val_int(etat->max_nourriture);
-    Store_field(res, 2, max_nourriture);
+    Store_field(res, 3, max_nourriture);
 
     max_eau = Val_int(etat->max_eau);
-    Store_field(res, 3, max_eau);
+    Store_field(res, 4, max_eau);
 
     max_vie = Val_int(etat->max_vie);
-    Store_field(res, 4, max_vie);
+    Store_field(res, 5, max_vie);
 
     max_degats = Val_int(etat->max_degats);
-    Store_field(res, 5, max_degats);
+    Store_field(res, 6, max_degats);
 
     duree_amelioration = Val_int(etat->duree_amelioration);
-    Store_field(res, 6, duree_amelioration);
+    Store_field(res, 7, duree_amelioration);
 
     max_stockage = Val_int(etat->max_stockage);
-    Store_field(res, 7, max_stockage);
+    Store_field(res, 8, max_stockage);
 
     max_production = Val_int(etat->max_production);
-    Store_field(res, 8, max_production);
+    Store_field(res, 9, max_production);
 
     max_envoi = Val_int(etat->max_envoi);
-    Store_field(res, 9, max_envoi);
+    Store_field(res, 10, max_envoi);
 
     CAMLreturn(res);
 }

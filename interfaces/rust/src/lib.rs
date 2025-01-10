@@ -95,6 +95,7 @@ pub struct FourmiRetour {
 /// et le résultat de l'action précédente
 pub struct ReineEtat {
     nourriture: u32,
+	team_id: u32,
     result: i32,
     max_nourriture: u32,
     max_eau: u32,

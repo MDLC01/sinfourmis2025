@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include <unordered_map>
 
 using json = nlohmann::json;
 
@@ -25,9 +26,11 @@ class Node {
     /**
      * @brief Convert the node to a salle that can be sent to the ants simulation
      *
+	 * @param team_id the id of the team to which the pheromones belong
+	 * 
      * @return salle the salle representation of the node
      */
-    salle as_salle() const;
+    salle as_salle(unsigned int team_id) const;
 
     /**
      * @brief Add an edge from this node to another node. It is undirected so the other node will
@@ -84,8 +87,8 @@ class Node {
      */
     void regen_food();
 
-    void set_pheromone(uint8_t pheromone) {
-        this->pheromone = pheromone;
+    void set_pheromone(uint8_t pheromone, unsigned int team_id) {
+        this->pheromones.at(team_id) = pheromone;
     }
 
     unsigned int get_id() const {
@@ -150,10 +153,10 @@ class Node {
     float get_y() const {
         return y;
     }
-
-    uint8_t get_pheromones() const {
-        return pheromone;
-    }
+	
+	const std::unordered_map<unsigned int, uint8_t> &get_pheromones() const {
+		return pheromones;
+	}
 
   private:
     void remove_edge(const std::shared_ptr<Edge> &edge);
@@ -162,7 +165,7 @@ class Node {
     salle_type type = salle_type::VIDE;
     float x = 0;
     float y = 0;
-    uint8_t pheromone = 0;
+    std::unordered_map<unsigned int, uint8_t> pheromones;
 
     unsigned int food = 0;
     unsigned int regen = 0;

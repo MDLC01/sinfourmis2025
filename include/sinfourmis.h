@@ -105,6 +105,7 @@ typedef struct fourmi_retour {
 /// et le résultat de l'action précédente
 typedef struct reine_etat {
     uint32_t nourriture;
+	uint32_t team_id;
     int32_t result;
     uint32_t max_nourriture;
     uint32_t max_eau;

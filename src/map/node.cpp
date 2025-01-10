@@ -11,7 +11,7 @@ void Node::remove_edge(const std::shared_ptr<Edge> &edge) {
     std::erase(edges, edge);
 }
 
-salle Node::as_salle() const {
+salle Node::as_salle(unsigned int team_id) const {
     size_t count = 0;
     for (const auto &team_ants : ants) {
         if (team_ants.second.size() > 0) {
@@ -27,6 +27,13 @@ salle Node::as_salle() const {
             count++;
         }
     }
+
+	uint8_t pheromone = 0;
+	auto it = pheromones.find(team_id);
+	if (it != pheromones.end()) {
+		pheromone = it->second;
+	}
+
     return {
         .type = type,
         .pheromone = pheromone,
@@ -90,7 +97,7 @@ void Node::regen_food() {
 void to_json(json &j, const Node &node) {
     j = json{
         {"id", node.id}, {"type", node.type},           {"x", node.x},
-        {"y", node.y},   {"pheromone", node.pheromone},
+        {"y", node.y},   {"pheromones", node.pheromones},
     };
     if (node.type == salle_type::NOURRITURE) {
         j["food"] = node.food;

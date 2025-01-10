@@ -50,6 +50,7 @@ type fourmi_retour = {
 
 type reine_etat = {
   nourriture : int;
+  team_id : int;
   result : int;
   max_nourriture : int;
   max_eau : int;
