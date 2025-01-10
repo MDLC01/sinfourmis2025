@@ -9,35 +9,6 @@ bool Dummy::load(std::string_view path) {
     return true;
 }
 
-struct memory_layout {
-    uint8_t path_counter;
-    uint8_t check_nourriture;
-    bool found_food : 1;
-    bool check_food : 1;
-    bool wait : 1;
-    bool erase_pheromone : 1;
-    bool creuse : 1;
-    char path[250];
-};
-
-// binary operations on raw memory
-#define GET_FOUND_FOOD(memory) (memory[2] >> 7)
-#define SET_FOUND_FOOD(memory, value) (memory[2] = (memory[2] & 0x7F) | (value << 7))
-
-#define GET_CHECK_FOOD(memory) ((memory[2] >> 6) & 1)
-#define SET_CHECK_FOOD(memory, value) (memory[2] = (memory[2] & 0xBF) | (value << 6))
-
-#define GET_WAIT(memory) ((memory[2] >> 5) & 1)
-#define SET_WAIT(memory, value) (memory[2] = (memory[2] & 0xDF) | (value << 5))
-
-#define GET_ERASE_PHEROMONE(memory) ((memory[2] >> 4) & 1)
-#define SET_ERASE_PHEROMONE(memory, value) (memory[2] = (memory[2] & 0xEF) | (value << 4))
-
-#define GET_CREUSE(memory) ((memory[2] >> 3) & 1)
-#define SET_CREUSE(memory, value) (memory[2] = (memory[2] & 0xF7) | (value << 3))
-
-static_assert(sizeof(memory_layout) <= sizeof(fourmi_etat::memoire), "memory_layout is too big");
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch"
 #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
