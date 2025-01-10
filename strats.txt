@@ -1,13 +1,64 @@
+mémoire globale : 
+- type de fourmis
+- quelques registres (mémoire des actions précédentes notamment)
+
+
+fonction de déplacement-construction (int edge) :
+  si précédente action était un déplacement échoué pour cause de tunnel non construit :
+    construire le tunnel à l'emplacement edge
+  sinon si précédente action construction de tunnel :
+    si c'est la 3 ème fois d'affilée : 
+      tenter de se déplacer à edge
+    sinon
+      continuer de construire à edge
+  sinon : 
+    s'y rendre
+
+
 exploratrice I : 
+stratégie : 
   parcourt le graphe de manière aléatoire en partant d'un point d'eau définin par un chemin.
   stocke le chemin aller et retour pour le transmettre à la fourimilière.
   rebrousse chemin lorsque limite d'eau ou limite de mémoire atteinte
   rebrousse chemin lorsqu'on atteint un point d'eau ou de nourriture non-exploré
 mémoire : 
-  - type de fourmi 
-  - résultat exploration 
-  - chemin source de départ (à supprimer)
-  - chemin retour de source de départ
-  - chemin exploration aller 
-  - chemin exploration retour
+- résultat exploration 
+- chemin source de départ (à supprimer)
+- chemin retour de source de départ
+- chemin exploration aller 
+- chemin exploration retour
+- position dans le chemin
+boucle :
+  si trajet vers source de départ :
+    suivre le chemin
+  si trajet aller :
+    si case de nourriture ou d'eau non-explorée : 
+      la marquer comme explorée
+      passer au trajet retour
+    sinon si limite d'eau ou de mémoire : 
+      passer au trajet retour
+    sinon :
+      si précédente action était un déplacement réussi :
+        noter le résultat du déplacement précédent (dans tajet retour)
+        choisir une direction aléatoire 
+        la noter dans le chemin aller
+      déplacement-construction (edge)
+  si trajet retour : 
+    suivre le chemin retour 
+
+ouvrière I : 
+- suit le chemin aller indiqué
+- collecte de ressource
+- retour selon le chemin retour
+mémoire : 
+- résultat collecte 
+- chemin aller 
+- chemin retour 
+- position dans le chemin 
+- taille du chemin 
+
+cartographe I : (à voir)
+- parcourt aléatoirement la carte puis revient à la fourimilière
+mémoire :
+- chemin détaillé (chemin aller, chemin retour, degrés des sommets, phéromones, fourimilière, eau, nourriture)
 
