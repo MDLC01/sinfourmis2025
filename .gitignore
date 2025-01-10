@@ -235,4 +235,4 @@ cython_debug/
 Sinfourmis
 *.cmake
 Makefile
-output.json
+output*.json
