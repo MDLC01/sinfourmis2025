@@ -7,7 +7,6 @@
 #include "interfaces/shared.hpp"
 #include "map/map.hpp"
 #include <filesystem>
-#include <format>
 #include <iostream>
 #include <random>
 
@@ -21,7 +20,7 @@ std::filesystem::path check_path(const std::string &value) {
     } else if (value == "output.json") {
         int i = 0;
         while (std::filesystem::exists(path)) {
-            path = std::filesystem::path(std::format("output{}.json", i));
+            path = std::filesystem::path("output" + std::to_string(i) + ".json");
             i++;
         }
         return path;
