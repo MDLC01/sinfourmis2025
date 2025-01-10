@@ -1,0 +1,13 @@
+exploratrice I : 
+  parcourt le graphe de manière aléatoire en partant d'un point d'eau définin par un chemin.
+  stocke le chemin aller et retour pour le transmettre à la fourimilière.
+  rebrousse chemin lorsque limite d'eau ou limite de mémoire atteinte
+  rebrousse chemin lorsqu'on atteint un point d'eau ou de nourriture non-exploré
+mémoire : 
+  - type de fourmi 
+  - résultat exploration 
+  - chemin source de départ (à supprimer)
+  - chemin retour de source de départ
+  - chemin exploration aller 
+  - chemin exploration retour
+
