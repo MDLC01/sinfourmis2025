@@ -24,3 +24,8 @@ typedef enum {
 type_fourmi read_type(rw *rw) {
     return (type_fourmi) read_number(rw, TYPE_SIZE);
 }
+
+
+type_fourmi write_type(rw *rw, type_fourmi type) {
+    write_number(rw, TYPE_SIZE, (unsigned long long) type);
+}
