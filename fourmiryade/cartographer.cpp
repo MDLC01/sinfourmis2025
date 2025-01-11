@@ -11,7 +11,9 @@
 typedef enum {
     CARTOGRAPHER_STARTS,
     CARTOGRAPHER_TRIED_MOVING,
-    CARTOGRAPHER_DIGGED,
+    CARTOGRAPHER_DIGGED_1,
+    CARTOGRAPHER_DIGGED_2,
+    CARTOGRAPHER_DIGGED_3,
     NUM_CARTOGRAPHER_STATES,
 } cartographer_state;
 
@@ -44,7 +46,7 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
                 // Unable to move there.
                 rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
                 choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
-                write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED);
+                write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_1);
                 return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
             }
             write_bool(rw, salle->nourriture > 0);
@@ -57,7 +59,19 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
 
-        CARTOGRAPHER_DIGGED: {
+        CARTOGRAPHER_DIGGED_1: {
+            rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
+            choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
+            write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_2);
+            return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+        }
+        CARTOGRAPHER_DIGGED_2: {
+            rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
+            choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
+            write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_3);
+            return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+        }
+        CARTOGRAPHER_DIGGED_3: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
