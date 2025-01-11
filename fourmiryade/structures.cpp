@@ -26,6 +26,6 @@ type_fourmi read_type(rw *rw) {
 }
 
 
-type_fourmi write_type(rw *rw, type_fourmi type) {
+void write_type(rw *rw, type_fourmi type) {
     write_number(rw, TYPE_SIZE, (unsigned long long) type);
 }
