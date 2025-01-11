@@ -178,7 +178,7 @@ class Node {
     float x = 0;
     float y = 0;
     std::unordered_map<unsigned int, uint8_t> pheromones;
-    unsigned int public_pheromone = 0;
+    uint8_t public_pheromone = 0;
 
     unsigned int food = 0;
     unsigned int regen = 0;
