@@ -7,7 +7,7 @@ pub extern "C" fn fourmi_activation(etat: *const FourmiEtat, salle: *const Salle
     FourmiRetour {
         action: FourmiAction::Deplacement,
         arg: 1,
-        depose_pheromone: false,
+        depose_pheromone: PheromoneType::NO_PHEROMONE,
         pheormone: 0,
     }
 }

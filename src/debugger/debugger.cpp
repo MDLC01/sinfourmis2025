@@ -16,15 +16,31 @@ void Debugger::print_node(Debugger::DisplayMode mode, const Node &node) {
         std::cout << "Queen: " << node.get_team() << "\n";
     }
     std::cout << "Pheromones: ";
+	for (const auto &[team_id, pheromone] : node.get_pheromones()) {
+		std::cout << "\t" << team_id << ": ";
+		switch (mode) {
+			case DisplayMode::HEX:
+				std::cout << "0x" << std::hex << pheromone << "\n";
+				break;
+			case DisplayMode::BIN:
+				std::cout << "0b" << std::bitset<8>(pheromone) << "\n";
+				break;
+			case DisplayMode::DEC:
+				std::cout << (int)pheromone << "\n";
+				break;
+		}
+    	std::cout << std::dec << std::endl;
+	}
+	std::cout << "\tpublic:";
     switch (mode) {
         case DisplayMode::HEX:
-            std::cout << "0x" << std::hex << node.get_pheromones() << "\n";
+            std::cout << "0x" << std::hex << node.get_public_pheromone() << "\n";
             break;
         case DisplayMode::BIN:
-            std::cout << "0b" << std::bitset<8>(node.get_pheromones()) << "\n";
+            std::cout << "0b" << std::bitset<8>(node.get_public_pheromone()) << "\n";
             break;
         case DisplayMode::DEC:
-            std::cout << (int)node.get_pheromones() << "\n";
+            std::cout << (int)node.get_public_pheromone() << "\n";
             break;
     }
     std::cout << std::dec << std::endl;

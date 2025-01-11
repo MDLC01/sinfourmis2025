@@ -1,4 +1,5 @@
 #include "map/edge.hpp"
+#include "game/constants.hpp"
 #include <iostream>
 
 Edge::Edge(Node *n1, Node *n2, unsigned int life) : node1(n1), node2(n2), life(life) {
@@ -30,8 +31,9 @@ unsigned int Edge::attack(unsigned int damages) {
     return life;
 }
 
-void Edge::dig() {
-    if (life < EDGE_LIFE) {
-        life++;
+void Edge::dig(unsigned int damages) {
+    life += damages;
+    if (life > EDGE_LIFE) {
+        life = EDGE_LIFE;
     }
 }

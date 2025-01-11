@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.20)
 
 set(USING_PYTHON ON)
 
@@ -39,7 +39,7 @@ if (USING_PYTHON)
 	include_directories(${Python_INCLUDE_DIRS})
 
 	execute_process(
-	COMMAND sh -c "python-config --cflags | tr -d '\n'"
+	COMMAND sh -c "python3-config --cflags | tr -d '\n'"
 	OUTPUT_VARIABLE PY_CFLAGS
 	)
 	execute_process(

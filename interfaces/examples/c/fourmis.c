@@ -29,5 +29,5 @@ fourmi_retour fourmi_activation(fourmi_etat *etat, const salle *salle) {
     } else {
         printf("Fourmi: Je suis une fourmi et je sais compter\n");
     }
-    return (fourmi_retour){.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = false, .pheromone = 0};
+    return (fourmi_retour){.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
 }

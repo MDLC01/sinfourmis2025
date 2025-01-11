@@ -150,6 +150,7 @@ uint32_t Queen::get_queen_stat(QueenStat type) const {
 reine_etat Queen::as_reine_etat() const {
     reine_etat etat;
     etat.result = result;
+	etat.team_id = team->get_id();
     etat.nourriture = team->get_food();
     etat.max_nourriture = get_stat(Stat::FOOD);
     etat.max_eau = get_stat(Stat::WATER);

@@ -11,6 +11,7 @@ bool SharedInterface::load(std::string_view path) {
     ghandle = dlopen(path.data(), RTLD_LAZY);
     if (!ghandle) {
         std::cerr << "Error loading shared object " << path.data() << std::endl;
+		std::cerr << dlerror() << std::endl;
         return false;
     }
 

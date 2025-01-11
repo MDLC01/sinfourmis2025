@@ -46,8 +46,9 @@ class Edge {
     /**
      * @brief Dig (Heal) the edge
      *
+     * @param damages the value to repair the edge
      */
-    void dig();
+    void dig(unsigned int damages);
 
     float get_length() const {
         return length;

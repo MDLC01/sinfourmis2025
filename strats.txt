@@ -76,4 +76,29 @@ cartographe I : (à voir)
 - parcourt aléatoirement la carte puis revient à la fourimilière
 mémoire :
 - chemin détaillé (chemin aller, chemin retour, degrés des sommets, phéromones, fourimilière, eau, nourriture)
-
+Quand on retrouve la fourmilière sur le chemin, algorithme exécuté par la reine pour reconstruire le graphe :
+  La reine maintiens une liste de chemins déjà vus et des identifiants pour chaque sommet rencontré (deux sommets peuvent avoir le même identifiant si l'on ne réalise pas encore que ce sont les mêmes).
+  chemins : liste de couples (chemin, id de sommet correspondant)
+  adj : matrice d'adjacence entre les sommets identifiés
+  Algorithme addIdentity(path) {
+    // Ajoute un chemin qui part de la base et y arrive.
+    nouveauté = [] // Pile vide.
+    For prefix in forward_path {
+      // On considère les préfixes du chemin d'aller par longueur croissante.
+      Si le préfixe est nouveau (i.e., pas dans `chemins`) et le sommet atteint n'est pas la base {
+        créer un nouveau sommet (identifiant frais `n`)
+        ajouter l'arête correspondante dans la matrice d'adjacence
+        nouveauté := n :: nouveauté
+      } sinon, si le sommet atteint est la base {
+        ajouter l'arête correspondante dans la matrice d'adjence, si pas déjà présente
+      }
+    }
+    For prefix in backward_path, tant que `nouveauté` != [] {
+      // On considère les préfixes du chemin de retour par longueur croissante.
+      Si le préfixe est connu comme menant à un sommet `n` (grâce à `chemins`) {
+        m = List.hd nouveauté
+        unifier m avec n dans la matrice d'adjacence et dans `chemins`
+        nouveauté := List.tl nouveauté
+      }
+    }
+  }

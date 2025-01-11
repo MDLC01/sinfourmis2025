@@ -70,10 +70,28 @@ reine_action val_to_reine_action(value val) {
     }
 }
 
+pheromone_type val_to_pheromone_type(value val) {
+    CAMLparam1(val);
+    switch (Int_val(val)) {
+        case 0:
+            CAMLreturnT(pheromone_type, NO_PHEROMONE);
+        case 1:
+            CAMLreturnT(pheromone_type, PRIVE);
+        case 2:
+            CAMLreturnT(pheromone_type, PUBLIC);
+        default:
+            fprintf(stderr,
+                    "val_to_pheromone_type error: expected integer value between 0 and 2, got %d",
+                    Int_val(val));
+            CAMLreturnT(pheromone_type, NO_PHEROMONE);
+    }
+}
+
 /// Converts a caml value to a fourmi_retour struct
 fourmi_retour val_to_fourmi_retour(value val) {
     CAMLparam1(val);
-    fourmi_retour result = {val_to_fourmi_action(Field(val, 0)), Int_val(Field(val, 1))};
+    fourmi_retour result = {val_to_fourmi_action(Field(val, 0)), Int_val(Field(val, 1)),
+                            val_to_pheromone_type(Field(val, 2)), Int_val(Field(val, 3))};
     CAMLreturnT(fourmi_retour, result);
 }
 
@@ -94,9 +112,11 @@ value fourmi_etat_to_val(const fourmi_etat *etat) {
     vie = Val_int(etat->vie);
     Store_field(res, 0, vie);
 
-    memoire = caml_alloc(256, 0);
+    memoire = caml_alloc_shr(256, 0);
     for (size_t i = 0; i < 256; i++) {
-        Store_field(memoire, i, Val_int(etat->memoire[i]));
+        caml_initialize(&Field(memoire, i), Val_int(etat->memoire[i]));
+        // Field(memoire, i) = Val_int(etat->memoire[i]);
+        // Store_field(memoire, i, Val_int(etat->memoire[i]));
     }
     Store_field(res, 1, memoire);
 
@@ -117,38 +137,41 @@ value reine_etat_to_val(const reine_etat *etat) {
     CAMLparam0();
     CAMLlocal5(res, nourriture, result, max_nourriture, max_eau);
     CAMLlocal5(max_vie, max_degats, duree_amelioration, max_stockage, max_production);
-    CAMLlocal1(max_envoi);
-    res = caml_alloc(10, 0);
+    CAMLlocal2(team_id, max_envoi);
+    res = caml_alloc(11, 0);
 
     nourriture = Val_int(etat->nourriture);
     Store_field(res, 0, nourriture);
 
+    team_id = Val_int(etat->team_id);
+    Store_field(res, 1, team_id);
+
     result = Val_int(etat->result);
-    Store_field(res, 1, result);
+    Store_field(res, 2, result);
 
     max_nourriture = Val_int(etat->max_nourriture);
-    Store_field(res, 2, max_nourriture);
+    Store_field(res, 3, max_nourriture);
 
     max_eau = Val_int(etat->max_eau);
-    Store_field(res, 3, max_eau);
+    Store_field(res, 4, max_eau);
 
     max_vie = Val_int(etat->max_vie);
-    Store_field(res, 4, max_vie);
+    Store_field(res, 5, max_vie);
 
     max_degats = Val_int(etat->max_degats);
-    Store_field(res, 5, max_degats);
+    Store_field(res, 6, max_degats);
 
     duree_amelioration = Val_int(etat->duree_amelioration);
-    Store_field(res, 6, duree_amelioration);
+    Store_field(res, 7, duree_amelioration);
 
     max_stockage = Val_int(etat->max_stockage);
-    Store_field(res, 7, max_stockage);
+    Store_field(res, 8, max_stockage);
 
     max_production = Val_int(etat->max_production);
-    Store_field(res, 8, max_production);
+    Store_field(res, 9, max_production);
 
     max_envoi = Val_int(etat->max_envoi);
-    Store_field(res, 9, max_envoi);
+    Store_field(res, 10, max_envoi);
 
     CAMLreturn(res);
 }
@@ -157,7 +180,7 @@ value reine_etat_to_val(const reine_etat *etat) {
 value salle_to_val(const salle *salle) {
     CAMLparam0();
     CAMLlocal5(res, type, pheromone, degre, compteurs);
-    res = caml_alloc(3, 0);
+    res = caml_alloc(4, 0);
 
     type = Val_int(salle->type);
     Store_field(res, 0, type);
@@ -179,6 +202,7 @@ value salle_to_val(const salle *salle) {
         Store_field(cons, 1, compteurs);
         compteurs = cons;
     }
+    Store_field(res, 3, compteurs);
 
     CAMLreturn(res);
 }
@@ -212,7 +236,7 @@ fourmi_retour fourmi_activation(fourmi_etat *etat, const salle *salle) {
 
     result = caml_callback2(*_fourmi_activation, val_etat, val_salle);
     assert(Tag_val(result) == 0); // 0 is the tag of a record
-    assert(Wosize_val(result) == 3);
+    assert(Wosize_val(result) == 4);
 
     // write back etat->memoire because it is currently stored in val_etat
     for (size_t i = 0; i < 256; i++) {
