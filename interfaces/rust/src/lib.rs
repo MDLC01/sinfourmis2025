@@ -61,6 +61,7 @@ pub struct FourmisCompteur {
 pub struct Salle {
     pub salle_type: SalleType,
     pub pheromone: u8,
+	pub public_pheromone: u8,
     pub degre: i32,
     pub taille_liste: usize,
     pub compteurs_fourmis: *const FourmisCompteur,

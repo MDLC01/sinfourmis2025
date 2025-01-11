@@ -1,21 +1,9 @@
-#include <bits/stdc++.h>
-#include <cstdint>
 #include <map>
 #include "sinfourmis.h"
+#include "structures.cpp"
+
 
 using namespace std;
-
-#define MAX_NODES 1000
-#define BASE_NODE 0
-
-typedef int choice;
-typedef int node;
-typedef vector<choice> path;
-
-typedef struct {
-    int node;
-    path path;
-} path_to_node_map;
 
 #define min(a,b) (a)<(b)?(a):(b)
 

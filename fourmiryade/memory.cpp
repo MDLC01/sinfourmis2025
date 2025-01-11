@@ -1,3 +1,5 @@
+#pragma once
+
 #include <assert.h>
 
 
@@ -27,11 +29,6 @@ int ceil_log2(unsigned long long x)
   return y;
 }
 
-typedef struct {
-    unsigned char *mem;
-    int offset;
-} reader;
-
 char get_bit(char* mem, int x) {
     int i = x/8;
     int j = x%8;
@@ -56,8 +53,9 @@ void set_bit(char*mem, int x, char bit) {
 }
 
 
+// get number form bit number min (included) from bit number max (excluded)
 unsigned long long get_number(char* mem, int min, int max) {
-  """get number form bit number min (included) from bit number max (excluded)"""
+    assert(min < max);
     assert(max-min <= 8*sizeof(unsigned long long));
     unsigned long long sum = 0;
     for (int x = min; x<max; x++){
@@ -66,8 +64,9 @@ unsigned long long get_number(char* mem, int min, int max) {
     }
     return sum;
 }
+// set number form bit number min (included) from bit number max (excluded) to the value of number
 void set_number (char* mem, int min, int max, unsigned long long number) {
-  """set number form bit number min (included) from bit number max (excluded) to the value of number"""
+    assert(min < max);
     assert(max-min <= 8*sizeof(unsigned long long));
     unsigned long long mask = 0b1;
     for (int x = max-1; x>=min; x--) {
@@ -78,14 +77,42 @@ void set_number (char* mem, int min, int max, unsigned long long number) {
 }
 
 
-typedef enum {
-    EXPLORATRICE,
-    CARTOGRAPHE,
-    OUVRIERE,
-    VARIANT_COUNT,
-} type_fourmi;
+typedef struct {
+    char *mem;
+    int offset;
+} rw;
 
-type_fourmi get_type(unsigned char *mem) {
-    int size = ceil_log2(VARIANT_COUNT);
-    return (type_fourmi) read_int(mem, 0, ceil_log2(VARIANT_COUNT));
+rw create_rw(char *mem) {
+    return (rw) { .mem = mem, .offset = 0 };
+}
+
+rw clone_rw(rw *rw) {
+    return *rw;
+}
+
+unsigned long long read_number(rw *rw, int size) {
+    unsigned long long value = get_number(rw->mem, rw->offset, rw->offset + size);
+    rw->offset += size;
+    return value;
+}
+
+bool read_bool(rw *rw) {
+    return (bool) read_number(rw, 1);
+}
+
+void write_number(rw *rw, int size, unsigned long long value) {
+    set_number(rw->mem, rw->offset, rw->offset + size, value);
+    rw->offset += size;
+}
+
+void write_bool(rw *rw, bool value) {
+    write_number(rw, 1, (unsigned long long) value);
+}
+
+// Reads a number and overrides it.
+unsigned long long override_number(rw *rw, int size, unsigned long long value) {
+    unsigned long long result = get_number(rw->mem, rw->offset, rw->offset + size);
+    set_number(rw->mem, rw->offset, rw->offset + size, value);
+    rw->offset += size;
+    return result;
 }

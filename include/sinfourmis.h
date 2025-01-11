@@ -50,6 +50,9 @@ typedef struct salle {
     /// péhromone présente dans la salle
     uint8_t pheromone;
 
+	/// péhromone publique présente dans la salle
+    uint8_t public_pheromone;
+
     /// nombre de salles voisines
     int32_t degre;
 
