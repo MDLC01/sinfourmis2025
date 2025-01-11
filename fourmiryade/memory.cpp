@@ -1,5 +1,4 @@
 #include <assert.h>
-#include "sinfourmis.h"
 
 
 int ceil_log2(unsigned long long x)
@@ -64,7 +63,7 @@ unsigned int read_int(unsigned char *mem, int bit_offset, unsigned int size) {
     return (n << 1) + read_bit(*mem, bit_offset);
 }
 
-void write_int(char *mem, int bit_offset, int size, unsigned int value) {
+void write_int(unsigned char *mem, int bit_offset, int size, unsigned int value) {
     assert(0 <= bit_offset);
     if (size == 0) {
         return;
