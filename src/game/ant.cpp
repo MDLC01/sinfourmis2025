@@ -123,6 +123,9 @@ void Ant::begin_digging(Edge *edge) {
 void Ant::dig(unsigned int damages) {
     assert(action_state == AntActionState::DIGGING);
     current_edge->dig(damages);
+	// if (current_edge->get_life() == EDGE_LIFE) {
+	// 	stop_digging();
+	// }
 }
 
 void Ant::stop_digging() {
