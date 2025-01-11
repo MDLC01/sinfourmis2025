@@ -26,6 +26,26 @@ static int costs[MAX_NODES][MAX_NODES] = {0};
 static cartographer_node_info node_infos[MAX_NODES] = {0};
 static node node_count = 1;
 
+cartographer_node_info unify_node_info(cartographer_node_info lhs, cartographer_node_info rhs) {
+    cartographer_node_info result;
+    result.water = lhs.water || rhs.water;
+    if (lhs.food_timestamp < rhs.food_timestamp) {
+        result.food = rhs.food;
+        result.food_timestamp = rhs.food_timestamp;
+    } else {
+        result.food = lhs.food;
+        result.food_timestamp = lhs.food_timestamp;
+    }
+    if (lhs.fighter_timestamp < rhs.fighter_timestamp) {
+        result.has_fighters = rhs.has_fighters;
+        result.fighter_timestamp = rhs.fighter_timestamp;
+    } else {
+        result.has_fighters = lhs.has_fighters;
+        result.fighter_timestamp = lhs.fighter_timestamp;
+    }
+    return result;
+}
+
 void unify_nodes(node m, node n) {
     // Mark neighbours of `n` as neighbours of `m`.
     for (int i = 0; i < node_count; i++) {
@@ -39,15 +59,7 @@ void unify_nodes(node m, node n) {
         }
     }
     // Combine node informations.
-    node_infos[m].water = node_infos[m].water || node_infos[n].water;
-    if (node_infos[m].food_timestamp < node_infos[n].food_timestamp) {
-        node_infos[m].food = node_infos[n].food;
-        node_infos[m].food_timestamp = node_infos[n].food_timestamp;
-    }
-    if (node_infos[m].fighter_timestamp < node_infos[n].fighter_timestamp) {
-        node_infos[m].has_fighters = node_infos[n].has_fighters;
-        node_infos[m].fighter_timestamp = node_infos[n].fighter_timestamp;
-    }
+    node_infos[m] = unify_node_info(node_infos[m], node_infos[n]);
     // Swap `n` and the last node, effectively removing `n`.
     node k = --node_count;
     for (int i = 0; i < node_count; i++) {
@@ -112,9 +124,10 @@ path shortest_path(node source, node destination) {
 }
 
 // Tells the queen that this path starts and ends at the base.
-void add_identity(path forward_path, path backward_path, vector<int> path_costs) {
+void add_identity(path forward_path, path backward_path, vector<int> path_costs, vector<cartographer_node_info> infos) {
     vector<node> news = {};
     node previous = BASE_NODE;
+    // FIXME: What happens with `i = 0`?
     for (int i = 1; i < forward_path.size(); i++) {
         path prefix(forward_path.begin(), forward_path.begin() + i);
 
@@ -133,17 +146,13 @@ void add_identity(path forward_path, path backward_path, vector<int> path_costs)
             adj[n][previous] = backward_path[backward_path.size() - i - 1];
             costs[previous][BASE_NODE] = path_costs[i];
             costs[BASE_NODE][previous] = path_costs[i];
-            node_infos[n].water = false;
-            node_infos[n].food = false;
-            // `-1` because this does not actually contain any meaningful information (we did not check).
-            node_infos[n].food_timestamp = -1;
-            node_infos[n].has_fighters = false;
-            node_infos[n].fighter_timestamp = -1;
+            node_infos[n] = infos[i - 1];
             known_paths.insert_or_assign(prefix, n);
             news.push_back(n);
             previous = n;
         } else {
             previous = result->second;
+            node_infos[previous] = unify_node_info(node_infos[previous], infos[i + 1]);
         }
     }
     for (int i = 1; i < backward_path.size(); i++) {
@@ -190,10 +199,19 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     vector<int> forward_path;
     vector<int> backward_path;
     vector<int> path_costs;
+    vector<cartographer_node_info> infos;
     for (int i = 0; i < path_length; i++) {
         choice next = read_number(&rw, PATH_NODE_INFO_NEXT_SIZE);
         bool food = read_bool(&rw);
         bool water = read_bool(&rw);
+        cartographer_node_info info;
+        info.water = water;
+        info.food = food;
+        // TODO: Use the current timestamp.
+        info.food_timestamp = 0;
+        info.has_fighters = false;
+        info.fighter_timestamp = -1;
+        infos.push_back(info);
         choice prev = read_number(&rw, PATH_NODE_INFO_PREV_SIZE);
         int cost = read_number(&rw, PATH_NODE_INFO_COST_SIZE);
         forward_path.push_back(next);
@@ -208,7 +226,7 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     path_costs.push_back(cost);
     forward_path.push_back(next);
     reverse(backward_path.begin(), backward_path.end());
-    add_identity(forward_path, backward_path, path_costs);
+    add_identity(forward_path, backward_path, path_costs, infos);
 }
 
 void initialize_cartographer(fourmi_etat *ant) {
