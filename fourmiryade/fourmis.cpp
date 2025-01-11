@@ -29,7 +29,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 	} else {
 		std::cout << "Fourmi: Je suis une fourmi et je sais compter" << std::endl;
 	}
-	return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = false, .pheromone = 0};
+	return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
 }
 
 extern "C" {
