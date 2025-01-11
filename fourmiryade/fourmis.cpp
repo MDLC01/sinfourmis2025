@@ -1,4 +1,5 @@
 #include "sinfourmis.h"
+#include "memory.cpp"
 #include <iostream>
 
 reine_retour cpp_reine_activation(fourmi_etat fourmis[], const unsigned int nb_fourmis,

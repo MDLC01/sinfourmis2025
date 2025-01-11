@@ -77,3 +77,15 @@ void write_int(char *mem, int bit_offset, int size, unsigned int value) {
     write_int(mem, bit_offset + 1, size - 1, value >> 1);
 }
 
+
+typedef enum {
+    EXPLORATRICE,
+    CARTOGRAPHE,
+    OUVRIERE,
+    VARIANT_COUNT,
+} type_fourmi;
+
+type_fourmi get_type(unsigned char *mem) {
+    int size = ceil_log2(VARIANT_COUNT);
+    return (type_fourmi) read_int(mem, 0, ceil_log2(VARIANT_COUNT));
+}
