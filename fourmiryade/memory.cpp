@@ -78,31 +78,29 @@ void set_number (char* mem, int min, int max, unsigned long long number) {
 typedef struct {
     char *mem;
     int offset;
-} reader;
+} rw;
 
-unsigned long long read_number(reader *r, int size) {
-    unsigned long long value = get_number(r->mem, r->offset, r->offset + size);
-    r->offset += size;
+rw create_rw(char *mem) {
+    return (rw) { .mem = mem, .offset = 0 };
+}
+
+unsigned long long read_number(rw *rw, int size) {
+    unsigned long long value = get_number(rw->mem, rw->offset, rw->offset + size);
+    rw->offset += size;
     return value;
 }
 
-bool read_bool(reader *r) {
-    return (bool) read_number(r, 1);
+bool read_bool(rw *rw) {
+    return (bool) read_number(rw, 1);
 }
 
-
-typedef struct {
-    char *mem;
-    int offset;
-} writer;
-
-void write_number(writer *w, int size, unsigned long long value) {
-    set_number(w->mem, w->offset, w->offset + size, value);
-    w->offset += size;
+void write_number(rw *rw, int size, unsigned long long value) {
+    set_number(rw->mem, rw->offset, rw->offset + size, value);
+    rw->offset += size;
 }
 
-void write_bool(writer *w, bool value) {
-    write_number(w, 1, (unsigned long long) value);
+void write_bool(rw *rw, bool value) {
+    write_number(rw, 1, (unsigned long long) value);
 }
 
 
@@ -113,7 +111,7 @@ typedef enum {
     VARIANT_COUNT,
 } type_fourmi;
 
-type_fourmi read_type(reader *r) {
+type_fourmi read_type(rw *rw) {
     int size = ceil_log2(VARIANT_COUNT);
-    return (type_fourmi) read_number(r, ceil_log2(VARIANT_COUNT));
+    return (type_fourmi) read_number(rw, ceil_log2(VARIANT_COUNT));
 }
