@@ -1,6 +1,7 @@
 #include <assert.h>
 
 
+// From https://stackoverflow.com/a/15327567.
 int ceil_log2(unsigned long long x)
 {
   static const unsigned long long t[6] = {
