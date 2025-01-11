@@ -5,7 +5,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX_NODES 1000
+#define MAX_NODES 5000
 #define BASE_NODE 0
 
 typedef uint8_t choice;
