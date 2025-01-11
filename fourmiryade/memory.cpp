@@ -116,16 +116,3 @@ unsigned long long override_number(rw *rw, int size, unsigned long long value) {
     rw->offset += size;
     return result;
 }
-
-
-typedef enum {
-    EXPLORATRICE,
-    CARTOGRAPHE,
-    OUVRIERE,
-    VARIANT_COUNT,
-} type_fourmi;
-
-type_fourmi read_type(rw *rw) {
-    int size = ceil_log2(VARIANT_COUNT);
-    return (type_fourmi) read_number(rw, ceil_log2(VARIANT_COUNT));
-}
