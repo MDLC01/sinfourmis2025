@@ -1,6 +1,7 @@
 mémoire globale : 
 - type de fourmis
 - quelques registres (mémoire des actions précédentes notamment)
+- quelques données (niveau d'amélioration d'eau)
 
 
 fonction de déplacement-construction (int edge) :
@@ -17,10 +18,11 @@ fonction de déplacement-construction (int edge) :
 
 exploratrice I : 
 stratégie : 
-  parcourt le graphe de manière aléatoire en partant d'un point d'eau définin par un chemin.
-  stocke le chemin aller et retour pour le transmettre à la fourimilière.
-  rebrousse chemin lorsque limite d'eau ou limite de mémoire atteinte
-  rebrousse chemin lorsqu'on atteint un point d'eau ou de nourriture non-exploré
+  la fourmillière choisit un point d'eau aléatoirement et transmet son chemin à la fourmi 
+  la fourmi s'y rend puis explore aléatoirement, tout en notant le trajet aller et retour 
+  elle revient lorsqu'elle atteint la limite d'eau ou de mémoire
+  elle revient aussi lorsqu'elle a atteint une source d'eau ou de nourriture inexplorée
+  la fourmillière stocke les trajets vers ces nouvelles sources le cas échéant
 mémoire : 
 - résultat exploration 
 - chemin source de départ (à supprimer)
@@ -34,28 +36,41 @@ boucle :
   si trajet aller :
     si case de nourriture ou d'eau non-explorée : 
       la marquer comme explorée
+      collecter de la nourriture
       passer au trajet retour
     sinon si limite d'eau ou de mémoire : 
       passer au trajet retour
     sinon :
       si précédente action était un déplacement réussi :
-        noter le résultat du déplacement précédent (dans tajet retour)
+        noter le résultat du déplacement précédent (dans tajet retour) + modifier la position dans le chemin
         choisir une direction aléatoire 
         la noter dans le chemin aller
       déplacement-construction (edge)
   si trajet retour : 
     suivre le chemin retour 
 
+
+
 ouvrière I : 
-- suit le chemin aller indiqué
-- collecte de ressource
-- retour selon le chemin retour
+stratégie : 
+  la fourimilière choisit une source de nourriture accessible avec suffisamment d'eau et le transmet à la fourmi 
+  la fourmi va y collecter de la nourriture et revient
+  la fourmillière stocke les informations sur la source de nourriture
 mémoire : 
 - résultat collecte 
 - chemin aller 
 - chemin retour 
 - position dans le chemin 
 - taille du chemin 
+boucle : 
+  si trajet aller : 
+    si dernier déplacement réussi :
+      position += 1
+      si arrivé, collecte puis trajet retour
+    edge := arrete a parcourir
+    déplacement-construction(edge)
+  si trajet retour : 
+    idem
 
 cartographe I : (à voir)
 - parcourt aléatoirement la carte puis revient à la fourimilière
