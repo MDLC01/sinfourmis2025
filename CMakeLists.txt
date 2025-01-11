@@ -35,24 +35,36 @@ include_directories(include)
 
 if (USING_PYTHON)
 	add_compile_definitions(USING_PYTHON)
-	find_package(Python COMPONENTS Interpreter Development)
+	find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+	
 	include_directories(${Python_INCLUDE_DIRS})
 
-	execute_process(
-	COMMAND sh -c "python3-config --cflags | tr -d '\n'"
-	OUTPUT_VARIABLE PY_CFLAGS
+	target_compile_definitions(Sinfourmis
+		PRIVATE
+			Py_LIMITED_API
 	)
-	execute_process(
-	COMMAND sh -c "python3-config --ldflags --embed | tr -d '\n'"
-	OUTPUT_VARIABLE PYTHON_LDFLAGS
+	target_include_directories(Sinfourmis
+		PRIVATE
+			${PYTHON_INCLUDE_DIRS}
 	)
-	execute_process(
-	COMMAND sh -c "python3 --version | cut -d' ' -f2 | cut -d'.' -f1,2"
-	OUTPUT_VARIABLE PYTHON_VERSION
+	target_link_libraries(Sinfourmis PUBLIC Python3::Python)
+	target_link_libraries(Sinfourmis
+		PRIVATE
+			${PYTHON_LIBRARIES}
 	)
 
-	string(APPEND CMAKE_CXX_FLAGS ${PY_CFLAGS})
-	string(APPEND CMAKE_EXE_LINKER_FLAGS ${PYTHON_LDFLAGS})
+
+	# execute_process(
+	# 	COMMAND sh -c "python3-config --cflags | tr -d '\n'"
+	# 	OUTPUT_VARIABLE PY_CFLAGS
+	# )
+	# execute_process(
+	# 	COMMAND sh -c "python3-config --ldflags --embed | tr -d '\n'"
+	# 	OUTPUT_VARIABLE PYTHON_LDFLAGS
+	# )
+
+	# string(APPEND CMAKE_CXX_FLAGS ${PY_CFLAGS})
+	# string(APPEND CMAKE_EXE_LINKER_FLAGS ${PYTHON_LDFLAGS})
 endif()
 
 # json library

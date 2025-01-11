@@ -150,7 +150,7 @@ void Animation::end_frame(const std::vector<std::unique_ptr<Queen>> &queens) {
 
     // teams animation
     auto teams = map->get_teams();
-    for (uint i = 0; i < teams.size(); i++) {
+    for (unsigned int i = 0; i < teams.size(); i++) {
         frame["teams"][i]["next"] = json::object();
         if (frame["teams"][i]["score"] != teams[i].get_score()) {
             frame["teams"][i]["next"]["score"] = teams[i].get_score();
