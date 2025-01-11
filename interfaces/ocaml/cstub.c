@@ -180,7 +180,8 @@ value reine_etat_to_val(const reine_etat *etat) {
 value salle_to_val(const salle *salle) {
     CAMLparam0();
     CAMLlocal5(res, type, pheromone, degre, compteurs);
-    res = caml_alloc(4, 0);
+	CAMLlocal1(public_pheromone);
+    res = caml_alloc(5, 0);
 
     type = Val_int(salle->type);
     Store_field(res, 0, type);
@@ -188,8 +189,11 @@ value salle_to_val(const salle *salle) {
     pheromone = Val_int(salle->pheromone);
     Store_field(res, 1, pheromone);
 
+	public_pheromone = Val_int(salle->public_pheromone);
+	Store_field(res, 2, public_pheromone);
+
     degre = Val_int(salle->degre);
-    Store_field(res, 2, degre);
+    Store_field(res, 3, degre);
 
     compteurs = Val_emptylist;
     for (size_t i = 0; i < salle->taille_liste; i++) {
@@ -202,7 +206,7 @@ value salle_to_val(const salle *salle) {
         Store_field(cons, 1, compteurs);
         compteurs = cons;
     }
-    Store_field(res, 3, compteurs);
+    Store_field(res, 4, compteurs);
 
     CAMLreturn(res);
 }
