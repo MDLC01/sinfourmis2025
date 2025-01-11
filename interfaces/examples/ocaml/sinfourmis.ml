@@ -35,6 +35,7 @@ type pheromone_type =
 type salle = {
   salle_type : salle_type;
   pheromone : int;
+  public_pheromone : int;
   degre : int;
   compteurs_fourmis : (int * int) list
 }

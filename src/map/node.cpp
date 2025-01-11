@@ -37,6 +37,7 @@ salle Node::as_salle(unsigned int team_id) const {
     return {
         .type = type,
         .pheromone = pheromone,
+		.public_pheromone = pheromone,
         .degre = (int32_t)edges.size(),
         .nourriture = food,
         .taille_liste = count,

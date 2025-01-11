@@ -282,7 +282,9 @@ void Game::run(unsigned int duration, unsigned int seed, bool flush, bool debug,
 
     debugger.debug(animation.game_turn(), map, ants, queens);
     while (animation.game_turn() < duration && !debugger.exit()) {
-
+		if (animation.game_turn() % 100 == 0) {
+			std::cout << "Turn " << animation.game_turn() << std::endl;
+		}
         animation.start_frame();
         map.regen_food();
 

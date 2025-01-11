@@ -25,6 +25,7 @@ PyObject *salle_to_po(const salle *s) {
     PyObject *py_salle = PyDict_New();
     PyDict_SetItemString(py_salle, "type", PyLong_FromLong(s->type));
     PyDict_SetItemString(py_salle, "pheromone", PyLong_FromLong(s->pheromone));
+	PyDict_SetItemString(py_salle, "public_pheromone", PyLong_FromLong(s->public_pheromone));
     PyDict_SetItemString(py_salle, "degre", PyLong_FromLong(s->degre));
 
     PyObject *py_compteurs = PyList_New(s->taille_liste);
