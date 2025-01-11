@@ -10,10 +10,20 @@
 using namespace std;
 
 
+typedef struct {
+    bool water;
+    bool food;
+    int food_timestamp;
+    bool has_fighters;
+    int fighter_timestamp;
+} cartographer_node_info;
+
+
 static map<path, node> known_paths;
 // `adj[u][v]` indicates what choice to make to go from `u` to `v`.
 static int adj[MAX_NODES][MAX_NODES] = {0};
 static int costs[MAX_NODES][MAX_NODES] = {0};
+static cartographer_node_info node_infos[MAX_NODES] = {0};
 static node node_count = 1;
 
 void unify_nodes(node m, node n) {
@@ -27,6 +37,16 @@ void unify_nodes(node m, node n) {
             adj[i][m] = adj[i][n];
             costs[i][m] = costs[i][n];
         }
+    }
+    // Combine node informations.
+    node_infos[m].water = node_infos[m].water || node_infos[n].water;
+    if (node_infos[m].food_timestamp < node_infos[n].food_timestamp) {
+        node_infos[m].food = node_infos[n].food;
+        node_infos[m].food_timestamp = node_infos[n].food_timestamp;
+    }
+    if (node_infos[m].fighter_timestamp < node_infos[n].fighter_timestamp) {
+        node_infos[m].has_fighters = node_infos[n].has_fighters;
+        node_infos[m].fighter_timestamp = node_infos[n].fighter_timestamp;
     }
     // Swap `n` and the last node, effectively removing `n`.
     node k = --node_count;
@@ -44,6 +64,8 @@ void unify_nodes(node m, node n) {
             v = n;
         }
     }
+    // `k <- n` in node informations.
+    node_infos[n] = node_infos[k];
 }
 
 // Computes the shortest path between two nodes (given the information we have).
@@ -105,11 +127,18 @@ void add_identity(path forward_path, path backward_path, vector<int> path_costs)
             costs[previous][BASE_NODE] = path_costs[i];
             costs[BASE_NODE][previous] = path_costs[i];
         } else if (result == known_paths.end()) {
+            // Create new node.
             node n = node_count++;
             adj[previous][n] = prefix.back();
             adj[n][previous] = backward_path[backward_path.size() - i - 1];
             costs[previous][BASE_NODE] = path_costs[i];
             costs[BASE_NODE][previous] = path_costs[i];
+            node_infos[n].water = false;
+            node_infos[n].food = false;
+            // `-1` because this does not actually contain any meaningful information (we did not check).
+            node_infos[n].food_timestamp = -1;
+            node_infos[n].has_fighters = false;
+            node_infos[n].fighter_timestamp = -1;
             known_paths.insert_or_assign(prefix, n);
             news.push_back(n);
             previous = n;
