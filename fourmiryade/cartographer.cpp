@@ -40,6 +40,9 @@ cartographer_node_info unify_node_info(cartographer_node_info lhs, cartographer_
 }
 
 void unify_nodes(node m, node n) {
+    if (n == BASE_NODE) {
+        return unify_nodes(n, m);
+    }
     // Mark neighbours of `n` as neighbours of `m`.
     for (int i = 0; i < node_count; i++) {
         if (adj[m][i] < 0) {
