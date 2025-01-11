@@ -5,19 +5,6 @@
 #include <iostream>
 
 
-typedef enum {
-    EXPLORATOR,
-    CARTOGRAPHER,
-    WORKER,
-    VARIANT_COUNT,
-} type_fourmi;
-
-type_fourmi read_type(rw *rw) {
-    int size = ceil_log2(VARIANT_COUNT);
-    return (type_fourmi) read_number(rw, ceil_log2(VARIANT_COUNT));
-}
-
-
 reine_retour cpp_reine_activation(fourmi_etat fourmis[], const unsigned int nb_fourmis,
                                   const reine_etat *etat, const salle *salle) {
     (void)etat;

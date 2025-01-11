@@ -1,5 +1,7 @@
 #pragma once
 
+#include "memory.cpp"
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -9,3 +11,16 @@ using namespace std;
 typedef int choice;
 typedef int node;
 typedef vector<choice> path;
+
+typedef enum {
+    EXPLORATOR,
+    CARTOGRAPHER,
+    WORKER,
+    VARIANT_COUNT,
+} type_fourmi;
+
+#define TYPE_SIZE ceil_log2(VARIANT_COUNT)
+
+type_fourmi read_type(rw *rw) {
+    return (type_fourmi) read_number(rw, TYPE_SIZE);
+}
