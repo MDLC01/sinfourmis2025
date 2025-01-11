@@ -1,18 +1,6 @@
-#include <bits/stdc++.h>
+#include "structures.cpp"
 #include <map>
 using namespace std;
-
-#define MAX_NODES 1000
-#define BASE_NODE 0
-
-typedef int choice;
-typedef int node;
-typedef vector<choice> path;
-
-typedef struct {
-    int node;
-    path path;
-} path_to_node_map;
 
 static map<path, node> known_paths;
 // `adj[u][v]` indicates what choice to make to go from `u` to `v`.
