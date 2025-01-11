@@ -86,6 +86,12 @@ rw create_rw(char *mem) {
     return (rw) { .mem = mem, .offset = 0 };
 }
 
+void align_rw(rw *rw) {
+    if (rw->offset % 8 != 0) {
+        rw->offset += 8 - (rw->offset % 8);
+    }
+}
+
 rw clone_rw(rw *rw) {
     return *rw;
 }

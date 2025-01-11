@@ -178,19 +178,19 @@ typedef enum {
 
 #define CARTOGRAPHER_STATE_SIZE ceil_log2(NUM_CARTOGRAPHER_STATES)
 
-#define PATH_NODE_INFO_PREV_SIZE 4
+#define PATH_NODE_INFO_PREV_SIZE 5
 #define PATH_NODE_INFO_COST_SIZE 4
-#define PATH_NODE_INFO_NEXT_SIZE 4
+#define PATH_NODE_INFO_NEXT_SIZE 5
 #define PATH_NODE_INFO_SIZE (1 + 1 + PATH_NODE_INFO_PREV_SIZE + PATH_NODE_INFO_COST_SIZE + PATH_NODE_INFO_NEXT_SIZE)
 
 #define PREVIOUS_WATER_SIZE 5
-// Max encodable path length: 127.
-#define PATH_LENGTH_SIZE 7
+#define PATH_LENGTH_SIZE 8
 
 void handle_cartographer_from_queen(fourmi_etat *ant) {
     rw rw = create_rw(ant->memoire);
     rw.offset += TYPE_SIZE;
     int previous_water = read_number(&rw, PREVIOUS_WATER_SIZE);
+    align_rw(&rw);
     int path_length = read_number(&rw, PATH_LENGTH_SIZE);
     vector<int> forward_path;
     vector<int> backward_path;
@@ -228,7 +228,16 @@ void initialize_cartographer(fourmi_etat *ant) {
     write_type(&rw, CARTOGRAPHER);
     write_number(&rw, PREVIOUS_WATER_SIZE, 0); // Whatever.
     write_number(&rw, CARTOGRAPHER_STATE_SIZE, CARTOGRAPHER_STARTS);
+    align_rw(&rw);
     write_number(&rw, PATH_LENGTH_SIZE, 0);
+}
+
+rw rw_at_cartographer_path_start(fourmi_etat *etat) {
+    rw rw = create_rw(etat->memoire);
+    read_type(&rw);
+    rw.offset += PREVIOUS_WATER_SIZE + CARTOGRAPHER_STATE_SIZE;
+    align_rw(&rw);
+    return rw;
 }
 
 fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
@@ -239,6 +248,7 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
     auto rw_at_state = clone_rw(rw);
     cartographer_state state = (cartographer_state) read_number(rw, CARTOGRAPHER_STATE_SIZE);
 
+    align_rw(rw);
     auto rw_at_path_length = clone_rw(rw);
     int path_length = read_and_increment(rw, PATH_LENGTH_SIZE);
     // Initial choice + rest of the path.
