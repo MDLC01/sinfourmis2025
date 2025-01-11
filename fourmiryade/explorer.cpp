@@ -1,6 +1,6 @@
 #include "sinfourmis.h"
 
-fourmi_retour explorator_activation(fourmi_etat *etat, const salle *salle) {
+fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
     // I
     // On suppose la mémoire initialisée
 

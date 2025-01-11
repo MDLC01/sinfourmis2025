@@ -1,7 +1,7 @@
 #include "sinfourmis.h"
 #include "memory.cpp"
 #include "cartographer.cpp"
-#include "explorator.cpp"
+#include "explorer.cpp"
 #include <iostream>
 
 
@@ -30,8 +30,8 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
     type_fourmi type = read_type(&rw);
 
     switch (read_type(&rw)) {
-        case EXPLORATOR: {
-            return explorator_activation(etat, salle);
+        case EXPLORER: {
+            return explorer_activation(etat, salle);
         }
         case WORKER: {
             // TODO
