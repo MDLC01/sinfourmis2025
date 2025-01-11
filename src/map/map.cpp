@@ -97,7 +97,8 @@ bool Map::load_nodes(const json &data) {
     }
 
     if (teams.size() != starting_nodes.size()) {
-        std::cerr << "Not enough starting nodes for teams" << std::endl;
+        std::cerr << "Not enough starting nodes for teams, got " << starting_nodes.size()
+				  << " expected " << teams.size() << std::endl;
         return false;
     }
 
