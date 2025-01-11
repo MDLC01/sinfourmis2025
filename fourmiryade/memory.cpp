@@ -84,6 +84,10 @@ rw create_rw(char *mem) {
     return (rw) { .mem = mem, .offset = 0 };
 }
 
+rw clone_rw(rw *rw) {
+    return *rw;
+}
+
 unsigned long long read_number(rw *rw, int size) {
     unsigned long long value = get_number(rw->mem, rw->offset, rw->offset + size);
     rw->offset += size;
@@ -101,6 +105,14 @@ void write_number(rw *rw, int size, unsigned long long value) {
 
 void write_bool(rw *rw, bool value) {
     write_number(rw, 1, (unsigned long long) value);
+}
+
+// Reads a number and overrides it.
+unsigned long long override_number(rw *rw, int size, unsigned long long value) {
+    unsigned long long result = get_number(rw->mem, rw->offset, rw->offset + size);
+    set_number(rw->mem, rw->offset, rw->offset + size, value);
+    rw->offset += size;
+    return result;
 }
 
 

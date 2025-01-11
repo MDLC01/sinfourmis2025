@@ -8,26 +8,6 @@
 #define PATH_NODE_INFO_NEXT_SIZE 4
 #define PATH_NODE_INFO_SIZE (1 + 1 + PATH_NODE_INFO_PREV_SIZE + PATH_NODE_INFO_COST_SIZE + PATH_NODE_INFO_NEXT_SIZE)
 
-// Returns the `path_node_info` that was read and advances the reader.
-path_node_info read_path_node_info(rw *rw) {
-    path_node_info info;
-    info.water = read_bool(rw);
-    info.food = read_bool(rw);
-    info.prev = read_number(rw, 4);
-    info.next = read_number(rw, 4);
-    info.cost = read_number(rw, 4);
-    return info;
-}
-
-// Writes the `path_node_info` and advances the writer.
-void write_path_node_info(rw *rw, path_node_info info) {
-    write_bool(rw, info.water);
-    write_bool(rw, info.food);
-    write_number(rw, info.prev, 4);
-    write_number(rw, info.next, 4);
-    write_number(rw, info.cost, 4);
-}
-
 typedef enum {
     CARTOGRAPHER_STARTS,
     CARTOGRAPHER_TRIED_MOVING,
@@ -37,7 +17,7 @@ typedef enum {
 
 #define CARTOGRAPHER_STATE_SIZE ceil_log2(NUM_CARTOGRAPHER_STATES)
 
-fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
+fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
     // First info is water amount.
     int previous_water = override_number(rw, 4, etat->eau);
 
