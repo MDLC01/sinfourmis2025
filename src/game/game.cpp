@@ -50,7 +50,11 @@ void Game::fourmi_action(Ant *ant) {
     }
     switch (ant_result.action) {
         case FOURMI_PASSE:
-            ant->set_result(0);
+			if (ant->get_action_state() == AntActionState::DIGGING) {
+				ant->set_result(ant->get_current_edge()->get_life());
+			} else {
+            	ant->set_result(0);
+			}
             break;
         case fourmi_action::DEPLACEMENT:
             if (ant->get_current_node()->degree() < (uint32_t)ant_result.arg) {
