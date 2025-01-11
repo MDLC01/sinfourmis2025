@@ -15,7 +15,6 @@ typedef struct {
     bool food;
     int food_timestamp;
     bool has_fighters;
-    int fighter_timestamp;
 } cartographer_node_info;
 
 
@@ -36,13 +35,7 @@ cartographer_node_info unify_node_info(cartographer_node_info lhs, cartographer_
         result.food = lhs.food;
         result.food_timestamp = lhs.food_timestamp;
     }
-    if (lhs.fighter_timestamp < rhs.fighter_timestamp) {
-        result.has_fighters = rhs.has_fighters;
-        result.fighter_timestamp = rhs.fighter_timestamp;
-    } else {
-        result.has_fighters = lhs.has_fighters;
-        result.fighter_timestamp = lhs.fighter_timestamp;
-    }
+    result.has_fighters = lhs.has_fighters || rhs.has_fighters;
     return result;
 }
 
@@ -207,10 +200,8 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
         cartographer_node_info info;
         info.water = water;
         info.food = food;
-        // TODO: Use the current timestamp.
-        info.food_timestamp = 0;
+        info.food_timestamp = turn_count;
         info.has_fighters = false;
-        info.fighter_timestamp = -1;
         infos.push_back(info);
         choice prev = read_number(&rw, PATH_NODE_INFO_PREV_SIZE);
         int cost = read_number(&rw, PATH_NODE_INFO_COST_SIZE);

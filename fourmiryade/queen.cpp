@@ -12,7 +12,6 @@ using namespace std;
 
 enum queen_turn_t {RECUP_TURN, RELEASE_TURN, BIRTH_TURN};
 queen_turn_t turn_type = BIRTH_TURN;
-long turn_count = 0;
 
 int nb_cartographer = 0;
 int nb_explorer = 0;
