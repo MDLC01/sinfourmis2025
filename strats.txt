@@ -42,7 +42,7 @@ boucle :
       passer au trajet retour
     sinon :
       si précédente action était un déplacement réussi :
-        noter le résultat du déplacement précédent (dans tajet retour) + modifier la position dans le chemin
+        noter le résultat du déplacement précédent (dans trajet retour) + modifier la position dans le chemin
         choisir une direction aléatoire
         la noter dans le chemin aller
       déplacement-construction (edge)
