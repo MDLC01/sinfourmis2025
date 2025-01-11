@@ -139,6 +139,10 @@ std::string Queen::current_upgrade() {
     return ss.str();
 }
 
+void Queen::remove_food(uint32_t food) {
+	assert(team->try_remove_food(food));
+}
+
 uint32_t Queen::get_stat(Stat type) const {
     return stats[(uint32_t)type];
 }

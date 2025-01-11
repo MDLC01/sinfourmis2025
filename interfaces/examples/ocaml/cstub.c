@@ -115,6 +115,8 @@ value fourmi_etat_to_val(const fourmi_etat *etat) {
     memoire = caml_alloc_shr(256, 0);
     for (size_t i = 0; i < 256; i++) {
         caml_initialize(&Field(memoire, i), Val_int(etat->memoire[i]));
+        // Field(memoire, i) = Val_int(etat->memoire[i]);
+        // Store_field(memoire, i, Val_int(etat->memoire[i]));
     }
     Store_field(res, 1, memoire);
 
@@ -264,6 +266,14 @@ reine_retour reine_activation(fourmi_etat fourmis[], const unsigned int nb_fourm
     result = caml_callback3(*_reine_activation, val_etats_fourmis, val_etat, val_salle);
     assert(Tag_val(result) == 0);
     assert(Wosize_val(result) == 2);
+
+	printf("nb_fourmis: %d\n", nb_fourmis);
+	// write back fourmis->memoire because it is currently stored in val_etats_fourmis
+	for (size_t i = 0; i < nb_fourmis; i++) {
+		for (size_t j = 0; j < 256; j++) {
+			fourmis[i].memoire[j] = Int_val(Field(Field(Field(val_etats_fourmis, i), 1), j));
+		}
+	}
 
     CAMLreturnT(reine_retour, val_to_reine_retour(result));
 }

@@ -42,9 +42,9 @@ pub enum ReineAction {
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
 pub enum PheromoneType {
-	NO_PHEROMONE,
-	PRIVE,
-	PUBLIC,
+	NoPheromone,
+	Prive,
+	Public,
 }
 
 

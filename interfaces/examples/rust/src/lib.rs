@@ -1,13 +1,13 @@
 extern crate sinfourmis;
 
-use sinfourmis::{FourmiAction, FourmiEtat, FourmiRetour, ReineAction, ReineRetour, Salle};
+use sinfourmis::{FourmiAction, FourmiEtat, FourmiRetour, ReineAction, ReineRetour, Salle, PheromoneType};
 
 #[no_mangle]
 pub extern "C" fn fourmi_activation(etat: *const FourmiEtat, salle: *const Salle) -> FourmiRetour {
     FourmiRetour {
         action: FourmiAction::Deplacement,
         arg: 1,
-        depose_pheromone: PheromoneType::NO_PHEROMONE,
+        depose_pheromone: PheromoneType::NoPheromone,
         pheormone: 0,
     }
 }
