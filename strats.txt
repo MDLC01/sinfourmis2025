@@ -102,3 +102,14 @@ Quand on retrouve la fourmilière sur le chemin, algorithme exécuté par la rei
       }
     }
   }
+
+
+combattantes I :
+stratégie : 
+  la fourmilière choisit une source d'eau ou de nourriture où des ennemis ont été repérés
+  elle génère suffisamment de fourmis pour one-shot un ennemi et les envoient sur cette source 
+  les fourmis y attquent constamment les ennemis 
+  si on ne one-shot plus les ennemis, on revient (soit ce sont les fourmis qui le déterminent soit c'est la reine)
+  (éventuellement) si la reine ordonne un rappel via un messager (TODO) on revient 
+  si il n'y a pas d'ennemis pendant suffisamment de temps, on revient 
+  la fourimilière garde la trace de toutes les équipes envoyées
