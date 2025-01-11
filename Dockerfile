@@ -24,7 +24,6 @@ RUN cd sinfourmis \
 	&& mkdir build \
 	&& cd build \
 	&& cmake .. \
-	&& make -j15 \
-	&& cp sinfourmis ../
+	&& make -j15 
 
 WORKDIR /sinfourmis
