@@ -6,6 +6,14 @@ reine_retour cpp_reine_activation(fourmi_etat fourmis[], const unsigned int nb_f
 	(void)etat;
 	(void)salle;
     static int nb_sent = 0;
+	static bool updated = false;
+	static int id = rand();
+	std::cout << "Reine: " << id << std::endl;
+	if (!updated) {
+		std::cout << "Try update" << std::endl;
+		updated = true;
+		return {.action = AMELIORE_RAMASSAGE, .arg = 1};
+	}
 	if (nb_sent > 2) {
 		return {.action = REINE_PASSE, .arg = 0};
 	}
@@ -16,8 +24,8 @@ reine_retour cpp_reine_activation(fourmi_etat fourmis[], const unsigned int nb_f
 	for (int i = 0; i < 256; i++) {
 		fourmis[0].memoire[i] = i;
 	}
-	std::cout << "Envoi d'une fourmi" << std::endl;
 	nb_sent += 1;
+	std::cout << "Envoi d'une fourmi :" << nb_sent << std::endl;
 	return {.action = ENVOYER_FOURMI, .arg = 1};
 }
 

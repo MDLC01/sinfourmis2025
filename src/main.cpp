@@ -30,6 +30,7 @@ std::filesystem::path check_path(const std::string &value) {
     return path;
 }
 
+
 int main(int argc, char **argv) {
     argparse::ArgumentParser program("sinfourmis");
     program.add_description("The 2025 sinfourmis simulator");

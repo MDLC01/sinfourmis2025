@@ -138,6 +138,7 @@ typedef enum {
     CARTOGRAPHER_DIGGED_1,
     CARTOGRAPHER_DIGGED_2,
     CARTOGRAPHER_DIGGED_3,
+    CARTOGRAPHER_DIGGED_4,
     NUM_CARTOGRAPHER_STATES,
 } cartographer_state;
 
@@ -181,6 +182,14 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     add_identity(forward_path, backward_path, path_costs);
 }
 
+void initialize_cartographer(fourmi_etat *ant) {
+    rw rw = create_rw(ant->memoire);
+    write_type(&rw, CARTOGRAPHER);
+    write_number(&rw, PREVIOUS_WATER_SIZE, 0); // Whatever.
+    write_number(&rw, CARTOGRAPHER_STATE_SIZE, CARTOGRAPHER_STARTS);
+    write_number(&rw, PATH_LENGTH_SIZE, 0);
+}
+
 fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
     // First info is water amount.
     int previous_water = override_number(rw, PREVIOUS_WATER_SIZE, etat->eau);
@@ -196,7 +205,6 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
 
     switch (state) {
         CARTOGRAPHER_STARTS: {
-            write_number(&rw_at_path_length, PATH_LENGTH_SIZE, 1);
             choice c = rand() % salle->degre;
             write_number(rw, PATH_NODE_INFO_NEXT_SIZE, c);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
@@ -210,7 +218,7 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
                 rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
                 choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
                 write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_1);
-                return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+                return {.action = COMMENCE_CONSTRUCTION, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
             }
             write_bool(rw, salle->nourriture > 0);
             write_bool(rw, salle->type == EAU);
@@ -226,15 +234,21 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_2);
-            return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+            return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
         CARTOGRAPHER_DIGGED_2: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_3);
-            return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+            return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
         CARTOGRAPHER_DIGGED_3: {
+            rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
+            choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
+            write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_4);
+            return {.action = TERMINE_CONSTRUCTION, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+        }
+        CARTOGRAPHER_DIGGED_4: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
