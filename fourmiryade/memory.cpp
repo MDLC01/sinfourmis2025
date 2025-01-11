@@ -81,13 +81,28 @@ typedef struct {
 } reader;
 
 unsigned long long read_number(reader *r, int size) {
-    unsigned long long value = get_number(r->mem, r->offset, size);
+    unsigned long long value = get_number(r->mem, r->offset, r->offset + size);
     r->offset += size;
     return value;
 }
 
 bool read_bool(reader *r) {
     return (bool) read_number(r, 1);
+}
+
+
+typedef struct {
+    char *mem;
+    int offset;
+} writer;
+
+void write_number(writer *w, int size, unsigned long long value) {
+    set_number(w->mem, w->offset, w->offset + size, value);
+    w->offset += size;
+}
+
+void write_bool(writer *w, bool value) {
+    write_number(w, 1, (unsigned long long) value);
 }
 
 
