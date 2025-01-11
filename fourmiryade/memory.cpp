@@ -57,6 +57,7 @@ void set_bit(char*mem, int x, char bit) {
 
 
 unsigned long long get_number(char* mem, int min, int max) {
+  """get number form bit number min (included) from bit number max (excluded)"""
     assert(max-min <= 8*sizeof(unsigned long long));
     unsigned long long sum = 0;
     for (int x = min; x<max; x++){
@@ -66,6 +67,7 @@ unsigned long long get_number(char* mem, int min, int max) {
     return sum;
 }
 void set_number (char* mem, int min, int max, unsigned long long number) {
+  """set number form bit number min (included) from bit number max (excluded) to the value of number"""
     assert(max-min <= 8*sizeof(unsigned long long));
     unsigned long long mask = 0b1;
     for (int x = max-1; x>=min; x--) {
