@@ -30,25 +30,6 @@ std::filesystem::path check_path(const std::string &value) {
     return path;
 }
 
-std::string create_safe_copy(const std::string &name) {
-	static bool temp_cleared = false;
-	if (!temp_cleared) {
-		if (std::filesystem::exists(".sinfourmis_temp")) {
-			std::filesystem::remove_all(".sinfourmis_temp");
-		}
-		std::filesystem::create_directory(".sinfourmis_temp");
-		temp_cleared = true;
-	}
-	int i = 0;
-	std::string new_name = name;
-	while (std::filesystem::exists(new_name)) {
-        new_name = ".sinfourmis_temp/" + name.substr(0, name.length() - 3) +
-                   std::to_string(i) + ".so";
-        i++;
-	}
-	std::filesystem::copy(name, new_name);
-	return new_name;
-}
 
 int main(int argc, char **argv) {
     argparse::ArgumentParser program("sinfourmis");
@@ -133,31 +114,25 @@ int main(int argc, char **argv) {
     Game &game = Game::getInstance();
     game.set_map(std::move(map));
     int team_id = 0;
-	std::unordered_set<std::string> team_names;
     for (const std::string &team : teams) {
         Interface *interface;
-		std::string team_safe = team;
-        if (team_safe == "dummy") {
+        if (team == "dummy") {
             interface = new Dummy();
-        } else if (!team.compare(team_safe.length() - 3, 3, ".so")) {
-            team_names.insert(team_safe);
-            if (team_names.find(team_safe) != team_names.end()) {
-                team_safe = create_safe_copy(team_safe);
-            }
+        } else if (!team.compare(team.length() - 3, 3, ".so")) {
             // the team file is a shared object, we use the corresponding interface
-            std::cout << "Loading " << team_safe << " using the shared object interface" << std::endl;
+            std::cout << "Loading " << team << " using the shared object interface" << std::endl;
             interface = new SharedInterface();
         } else {
 #ifdef USING_PYTHON
             // We assume the team file is a python package
-            std::cout << "Loading " << team_safe << " using the python interface" << std::endl;
+            std::cout << "Loading " << team << " using the python interface" << std::endl;
             interface = new PythonInterface();
 #else
             std::cerr << "Unknown team file format" << std::endl;
             return 1;
 #endif
         }
-        if (!interface->load(team_safe)) {
+        if (!interface->load(team)) {
             std::cerr << "Failed to load team file" << std::endl;
             return 3;
         }

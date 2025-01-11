@@ -2,6 +2,7 @@
 
 #include "interface.hpp"
 #include <string_view>
+#include <string>
 
 /// Generic interface for interfacing with shared objects
 class SharedInterface : public Interface {
@@ -15,7 +16,7 @@ class SharedInterface : public Interface {
     fourmi_retour fourmi_activation(fourmi_etat *fourmi, const salle *salle) override;
 
   private:
-    std::string_view gpath;
+    std::string gpath;
     void *ghandle;
 
     reine_retour (*reine_fn)(fourmi_etat *, const size_t, const reine_etat *, const salle *);
