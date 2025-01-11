@@ -255,14 +255,14 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
     int path_size = PATH_NODE_INFO_NEXT_SIZE + path_length * PATH_NODE_INFO_SIZE;
 
     switch (state) {
-        CARTOGRAPHER_STARTS: {
+        case CARTOGRAPHER_STARTS: {
             choice c = rand() % salle->degre;
             write_number(rw, PATH_NODE_INFO_NEXT_SIZE, c);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
             return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
 
-        CARTOGRAPHER_TRIED_MOVING: {
+        case CARTOGRAPHER_TRIED_MOVING: {
             rw->offset += path_size;
             if (etat->result < 0) {
                 // Unable to move there.
@@ -281,32 +281,32 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
 
-        CARTOGRAPHER_DIGGED_1: {
+        case CARTOGRAPHER_DIGGED_1: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_2);
             return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
-        CARTOGRAPHER_DIGGED_2: {
+        case CARTOGRAPHER_DIGGED_2: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_3);
             return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
-        CARTOGRAPHER_DIGGED_3: {
+        case CARTOGRAPHER_DIGGED_3: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_4);
             return {.action = TERMINE_CONSTRUCTION, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
-        CARTOGRAPHER_DIGGED_4: {
+        case CARTOGRAPHER_DIGGED_4: {
             rw->offset -= PATH_NODE_INFO_NEXT_SIZE;
             choice c = read_number(rw, PATH_NODE_INFO_NEXT_SIZE);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
             return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
 
-        default: {
+        case NUM_CARTOGRAPHER_STATES: {
             assert(false);
         }
     }

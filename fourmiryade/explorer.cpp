@@ -139,7 +139,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, rw *rw, const salle *salle)
             return;
         }
 
-        default: {
+        case NUM_EXPLORER_PHASES: {
             assert(false);
         }
     }

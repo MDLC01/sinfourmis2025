@@ -48,7 +48,9 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
         // TODO : read worker memory
         break;
       }
-      default: {}
+      case VARIANT_COUNT: {
+        assert(false);
+      }
     }
     for  (int j=0; j<256; j++){
       fourmis[i].memoire[j] = 0;

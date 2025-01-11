@@ -40,7 +40,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
         case CARTOGRAPHER: {
             return cartographer_activation(etat, &rw, salle);
         }
-        default: {
+        case VARIANT_COUNT: {
             assert(false);
         }
     }
