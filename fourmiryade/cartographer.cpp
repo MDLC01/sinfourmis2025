@@ -192,8 +192,8 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     int previous_water = read_number(&rw, PREVIOUS_WATER_SIZE);
     align_rw(&rw);
     int path_length = read_number(&rw, PATH_LENGTH_SIZE);
-    vector<int> forward_path;
-    vector<int> backward_path;
+    vector<choice> forward_path;
+    vector<choice> backward_path;
     vector<int> path_costs;
     vector<cartographer_node_info> infos;
     for (int i = 0; i < path_length; i++) {
