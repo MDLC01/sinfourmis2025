@@ -40,8 +40,14 @@ void Game::fourmi_action(Ant *ant) {
         // we can still perform other actions while digging
     }
     auto &etat = ant->as_fourmi_etat();
+	auto eau = etat.eau;
+	auto nourriture = etat.nourriture;
+	auto vie = etat.vie;
     auto room = ant->get_current_node()->as_salle(ant->get_team_id());
     auto ant_result = interfaces[ant->get_team_id()]->fourmi_activation(&etat, &room);
+	etat.eau = eau;
+	etat.nourriture = nourriture;
+	etat.vie = vie;
     delete[] room.compteurs_fourmis;
     if (ant_result.depose_pheromone == PRIVE) {
         ant->get_current_node()->set_pheromone(ant_result.pheromone, ant->get_team_id());
