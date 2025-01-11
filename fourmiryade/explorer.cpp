@@ -129,6 +129,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, rw *rw, const salle *salle)
 //     suivre le chemin retour
 
         case EXPLORER_EXPLORES: {
+            // TODO: Continuer par ici...
             if ((salle->nourriture > 0 || salle->type == EAU) && (salle->pheromone & PHEROMONE_EXPLORED) != 0) {
                 write_number(&rw_at_phase, EXPLORER_PHASE_SIZE, EXPLORER_BACKS_UP);
                 return {.action = RAMASSE_NOURRITURE, .arg = 0, .depose_pheromone = PUBLIC, .pheromone = PHEROMONE_EXPLORED};
