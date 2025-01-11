@@ -27,11 +27,6 @@ int ceil_log2(unsigned long long x)
   return y;
 }
 
-typedef struct {
-    unsigned char *mem;
-    int offset;
-} reader;
-
 char get_bit(char* mem, int x) {
     int i = x/8;
     int j = x%8;
@@ -80,6 +75,22 @@ void set_number (char* mem, int min, int max, unsigned long long number) {
 }
 
 
+typedef struct {
+    char *mem;
+    int offset;
+} reader;
+
+unsigned long long read_number(reader *r, int size) {
+    unsigned long long value = get_number(r->mem, r->offset, size);
+    r->offset += size;
+    return value;
+}
+
+bool read_bool(reader *r) {
+    return (bool) read_number(r, 1);
+}
+
+
 typedef enum {
     EXPLORATRICE,
     CARTOGRAPHE,
@@ -87,7 +98,7 @@ typedef enum {
     VARIANT_COUNT,
 } type_fourmi;
 
-type_fourmi get_type(unsigned char *mem) {
+type_fourmi read_type(reader *r) {
     int size = ceil_log2(VARIANT_COUNT);
-    return (type_fourmi) read_int(mem, 0, ceil_log2(VARIANT_COUNT));
+    return (type_fourmi) read_number(r, ceil_log2(VARIANT_COUNT));
 }
