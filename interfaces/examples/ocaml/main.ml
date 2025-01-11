@@ -1,7 +1,14 @@
 let fourmi_activation (etat : Sinfourmis.fourmi_etat) (salle : Sinfourmis.salle) : Sinfourmis.fourmi_retour =
   etat.memoire.(0) <- char_of_int ((int_of_char etat.memoire.(0)) + 1);
-  (if etat.memoire.(0) = char_of_int 1 then
-    print_endline "Fourmi : Je suis une fourmi"
+  (if etat.memoire.(0) = char_of_int 1 then (
+    print_endline "Fourmi : Je suis une fourmi";
+    for i = 0 to 255 do
+      print_int (int_of_char etat.memoire.(i));
+      if i mod 16 = 15 then
+        print_newline ()
+    done;
+    print_newline ()
+  )
   else
     print_endline "Fourmi : Je suis une fourmi qui sait compter"
   );

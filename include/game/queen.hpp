@@ -61,6 +61,8 @@ class Queen {
      */
     bool upgrade_queen(QueenStat type);
 
+	void remove_food(uint32_t food);
+
     std::string current_upgrade();
 
     uint32_t get_stat(Stat type) const;

@@ -267,5 +267,11 @@ reine_retour reine_activation(fourmi_etat fourmis[], const unsigned int nb_fourm
     assert(Tag_val(result) == 0);
     assert(Wosize_val(result) == 2);
 
+	for (size_t i = 0; i < nb_fourmis; i++) {
+		for (size_t j = 0; j < 256; j++) {
+			fourmis[i].memoire[j] = Int_val(Field(Field(Field(val_etats_fourmis, i), 1), j));
+		}
+	}
+
     CAMLreturnT(reine_retour, val_to_reine_retour(result));
 }

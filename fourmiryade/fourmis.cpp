@@ -22,6 +22,60 @@ reine_retour cpp_reine_activation(fourmi_etat fourmis[], const unsigned int nb_f
 	return {.action = ENVOYER_FOURMI, .arg = 1};
 }
 
+fourmi_retour exploratrice(fourmi_etat *etat, const salle *salle) {
+	// I
+	// On suppose la mémoire initialisée
+
+	// decrémenter limite eau / mémoire ?
+	
+	if get_memoire() {
+		// Trajet vers src départ
+		// Suivre chemin ?
+		return {.action = DEPLACEMENT, .arg = XXX, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+	}
+
+	if (get_memoire(trajet) == 0) {
+		if (!EXPLOREE && (salle->salle_type == EAU || (salle->salle_type == NOURRITURE && salle->nourriture > 0))) {
+			pheromone();
+			set_memoire(trajet, 1);
+			return {.action = DEPLACEMENT, .arg = XXX, .depose_pheromone = PRIVE, .pheromone = 1};
+		}
+
+		if (LIMITE) {
+			set_memoire(trajet, 1);
+			return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+		}
+
+		if () {
+
+		}
+		
+		// déplacement-construction (edge)
+		return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
+
+	}
+
+	else {
+		// Trajet vers src départ
+		// Suivre chemin retour ?
+	}
+}
+
+fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
+	if (get_type(self) == EXPLORATRICE) {
+		return exploratrice(etat, salle);
+	}
+
+	if (get_type(self) == OUVRIERE) {
+		return ouvriere(etat, salle);
+	}
+
+	if (get_type(self) == CARTOGRAPHE) {
+		return cartographe(self, salle);
+	}
+}
+
+/*
 fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 	(void)salle;
 	etat->memoire[0] += 1;
@@ -32,6 +86,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 	}
 	return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
 }
+*/
 
 extern "C" {
 reine_retour reine_activation(fourmi_etat fourmis[], const unsigned int nb_fourmis,
