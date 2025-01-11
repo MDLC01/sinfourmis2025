@@ -63,7 +63,7 @@ void Game::fourmi_action(Ant *ant) {
 			}
             break;
         case fourmi_action::DEPLACEMENT:
-            if (ant->get_current_node()->degree() < (uint32_t)ant_result.arg) {
+            if (ant->get_current_node()->degree() <= (uint32_t)ant_result.arg) {
                 ant->set_result(-1);
             } else if (ant->get_action_state() != AntActionState::NONE) {
                 ant->set_result(-1);
