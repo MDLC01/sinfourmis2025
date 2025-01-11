@@ -1,3 +1,5 @@
+#pragma once
+
 #include "sinfourmis.h"
 #include "structures.cpp"
 #include "memory.cpp"
