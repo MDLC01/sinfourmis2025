@@ -116,3 +116,11 @@ unsigned long long override_number(rw *rw, int size, unsigned long long value) {
     rw->offset += size;
     return result;
 }
+
+// Returns the original value, not the incremented value.
+unsigned long long read_and_increment(rw *rw, int size) {
+    unsigned long long value = get_number(rw->mem, rw->offset, rw->offset + size);
+    set_number(rw->mem, rw->offset, rw->offset + size, value + 1);
+    rw->offset += size;
+    return value;
+}
