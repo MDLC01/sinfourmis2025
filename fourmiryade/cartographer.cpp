@@ -232,12 +232,12 @@ void initialize_cartographer(fourmi_etat *ant) {
     write_number(&rw, PATH_LENGTH_SIZE, 0);
 }
 
-rw rw_at_cartographer_path_start(fourmi_etat *etat) {
+char *mem_at_cartographer_path_start(fourmi_etat *etat) {
     rw rw = create_rw(etat->memoire);
     read_type(&rw);
     rw.offset += PREVIOUS_WATER_SIZE + CARTOGRAPHER_STATE_SIZE;
     align_rw(&rw);
-    return rw;
+    return rw.mem + (rw.offset / 8);
 }
 
 fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
