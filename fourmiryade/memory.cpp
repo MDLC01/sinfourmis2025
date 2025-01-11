@@ -88,3 +88,48 @@ type_fourmi get_type(unsigned char *mem) {
     int size = ceil_log2(VARIANT_COUNT);
     return (type_fourmi) read_int(mem, 0, ceil_log2(VARIANT_COUNT));
 }
+
+
+
+char get_bit(char* mem, int x) {
+    int i = x/8;
+    int j = x%8;
+    assert(x < 256);
+    assert(x >=0);
+    char mask = 1 << j;
+    char oct = mem[i];
+    char res = mask & oct;
+    return (res != 0);
+}
+
+void set_bit(char*mem, int x, char bit) {
+    int i = x/8;
+    int j = x%8;
+    assert(x < 256);
+    assert(x >=0);
+    char oct = mem[i];
+    char mask = 1<<j;
+    char mask2 = ~mask;
+    oct = bit?oct|mask:oct&mask2;
+    mem[i] = oct;
+}
+
+
+unsigned long long get_number(char* mem, int min, int max) {
+    assert(max-min <= 8*sizeof(unsigned long long));
+    unsigned long long sum = 0;
+    for (int x = min; x<max; x++){
+        sum = sum<<1;
+        sum += get_bit(mem, x);
+    }
+    return sum;
+}
+void set_number (char* mem, int min, int max, unsigned long long number) {
+    assert(max-min <= 8*sizeof(unsigned long long));
+    unsigned long long mask = 0b1;
+    for (int x = max-1; x>=min; x--) {
+        char bit = number & mask;
+        set_bit(mem, x, bit);
+        number = number >> 1;
+    }
+}

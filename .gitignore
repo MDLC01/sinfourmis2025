@@ -236,3 +236,4 @@ Sinfourmis
 *.cmake
 Makefile
 output*.json
+output/
