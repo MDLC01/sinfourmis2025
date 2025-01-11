@@ -13,7 +13,7 @@ typedef int node;
 typedef vector<choice> path;
 
 typedef enum {
-    EXPLORATOR,
+    EXPLORER,
     CARTOGRAPHER,
     WORKER,
     VARIANT_COUNT,
