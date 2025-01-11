@@ -1,4 +1,4 @@
-mémoire globale : 
+mémoire globale :
 - type de fourmis
 - quelques registres (mémoire des actions précédentes notamment)
 - quelques données (niveau d'amélioration d'eau)
@@ -8,68 +8,68 @@ fonction de déplacement-construction (int edge) :
   si précédente action était un déplacement échoué pour cause de tunnel non construit :
     construire le tunnel à l'emplacement edge
   sinon si précédente action construction de tunnel :
-    si c'est la 3 ème fois d'affilée : 
+    si c'est la 3 ème fois d'affilée :
       tenter de se déplacer à edge
     sinon
       continuer de construire à edge
-  sinon : 
+  sinon :
     s'y rendre
 
 
-exploratrice I : 
-stratégie : 
-  la fourmillière choisit un point d'eau aléatoirement et transmet son chemin à la fourmi 
-  la fourmi s'y rend puis explore aléatoirement, tout en notant le trajet aller et retour 
+exploratrice I :
+stratégie :
+  la fourmillière choisit un point d'eau aléatoirement et transmet son chemin à la fourmi
+  la fourmi s'y rend puis explore aléatoirement, tout en notant le trajet aller et retour
   elle revient lorsqu'elle atteint la limite d'eau ou de mémoire
   elle revient aussi lorsqu'elle a atteint une source d'eau ou de nourriture inexplorée
   la fourmillière stocke les trajets vers ces nouvelles sources le cas échéant
-mémoire : 
-- résultat exploration 
+mémoire :
+- résultat exploration
 - chemin source de départ (à supprimer)
 - chemin retour de source de départ
-- chemin exploration aller 
+- chemin exploration aller
 - chemin exploration retour
 - position dans le chemin
 boucle :
   si trajet vers source de départ :
     suivre le chemin
   si trajet aller :
-    si case de nourriture ou d'eau non-explorée : 
+    si case de nourriture ou d'eau non-explorée :
       la marquer comme explorée
       collecter de la nourriture
       passer au trajet retour
-    sinon si limite d'eau ou de mémoire : 
+    sinon si limite d'eau ou de mémoire :
       passer au trajet retour
     sinon :
       si précédente action était un déplacement réussi :
         noter le résultat du déplacement précédent (dans tajet retour) + modifier la position dans le chemin
-        choisir une direction aléatoire 
+        choisir une direction aléatoire
         la noter dans le chemin aller
       déplacement-construction (edge)
-  si trajet retour : 
-    suivre le chemin retour 
+  si trajet retour :
+    suivre le chemin retour
 
 
 
-ouvrière I : 
-stratégie : 
-  la fourimilière choisit une source de nourriture accessible avec suffisamment d'eau et le transmet à la fourmi 
+ouvrière I :
+stratégie :
+  la fourimilière choisit une source de nourriture accessible avec suffisamment d'eau et le transmet à la fourmi
   la fourmi va y collecter de la nourriture et revient
   la fourmillière stocke les informations sur la source de nourriture
-mémoire : 
-- résultat collecte 
-- chemin aller 
-- chemin retour 
-- position dans le chemin 
-- taille du chemin 
-boucle : 
-  si trajet aller : 
+mémoire :
+- résultat collecte
+- chemin aller
+- chemin retour
+- position dans le chemin
+- taille du chemin
+boucle :
+  si trajet aller :
     si dernier déplacement réussi :
       position += 1
       si arrivé, collecte puis trajet retour
     edge := arrete a parcourir
     déplacement-construction(edge)
-  si trajet retour : 
+  si trajet retour :
     idem
 
 cartographe I : (à voir)
@@ -105,11 +105,11 @@ Quand on retrouve la fourmilière sur le chemin, algorithme exécuté par la rei
 
 
 combattantes I :
-stratégie : 
+stratégie :
   la fourmilière choisit une source d'eau ou de nourriture où des ennemis ont été repérés
-  elle génère suffisamment de fourmis pour one-shot un ennemi et les envoient sur cette source 
-  les fourmis y attquent constamment les ennemis 
+  elle génère suffisamment de fourmis pour one-shot un ennemi et les envoient sur cette source
+  les fourmis y attquent constamment les ennemis
   si on ne one-shot plus les ennemis, on revient (soit ce sont les fourmis qui le déterminent soit c'est la reine)
-  (éventuellement) si la reine ordonne un rappel via un messager (TODO) on revient 
-  si il n'y a pas d'ennemis pendant suffisamment de temps, on revient 
+  (éventuellement) si la reine ordonne un rappel via un messager (TODO) on revient
+  si il n'y a pas d'ennemis pendant suffisamment de temps, on revient
   la fourimilière garde la trace de toutes les équipes envoyées
