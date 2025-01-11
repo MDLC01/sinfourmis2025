@@ -233,16 +233,16 @@ void Game::queen_action(Queen *queen, std::vector<std::unique_ptr<Ant>> &ants) {
             {
                 uint32_t gathered = 0;
                 Node *node = queen->get_current_node();
-                if (result.arg < 0) {
+                if (result.arg < 1) {
                     queen->set_result(-1);
                     break;
                 }
                 auto max_gathered = std::min(
-                    (uint32_t)result.arg, queen->get_queen_stat(Queen::QueenStat::MAX_STORED_ANTS));
+                    (uint32_t)result.arg, queen->get_queen_stat(Queen::QueenStat::MAX_STORED_ANTS) - queen->stored_ants());
                 auto node_ants = node->get_team_ants(queen->get_team_id());
                 for (auto it = node_ants.begin(); it != node_ants.end() && gathered < max_gathered;
                      it++) {
-                    if (!(*it)->alive() || (*it)->get_action_state() != AntActionState::MOVING) {
+                    if (!(*it)->alive() || (*it)->get_action_state() == AntActionState::MOVING) {
                         continue;
                     }
                     if (queen->push_ant((*it)->as_fourmi_etat())) {

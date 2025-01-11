@@ -36,7 +36,7 @@ reine_retour SharedInterface::reine_activation(fourmi_etat fourmis[], const size
 fourmi_retour SharedInterface::fourmi_activation(fourmi_etat *fourmi, const salle *salle) {
     // each time fourmi_activation is called, we load the corresponding library to prevent
     // persistent data modifications
-    void *handle = dlopen(gpath.data(), RTLD_LAZY);
+    void *handle = dlopen(gpath.data(), RTLD_LAZY | RTLD_LOCAL);
 
     fourmi_retour (*fourmi_fn)(fourmi_etat *, const struct salle *) =
         (fourmi_retour(*)(fourmi_etat *, const struct salle *))dlsym(handle, "fourmi_activation");
