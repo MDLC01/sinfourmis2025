@@ -120,6 +120,10 @@ class Queen {
         this->result = new_result;
     }
 
+	unsigned int stored_ants() const {
+		return ants_memory.size();
+	}
+
     friend std::ostream &operator<<(std::ostream &os, const Queen &queen);
 
   private:
