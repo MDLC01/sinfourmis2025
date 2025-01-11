@@ -138,6 +138,7 @@ bool Map::load(const std::string_view &filename) {
 
 	if (!data.contains("base_food")) {
 		std::cerr << "Missing base_food field" << std::endl;
+		return false;
 	}
 
 	auto base_food = data["base_food"].get<unsigned int>();

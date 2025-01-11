@@ -226,6 +226,7 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
         int g;
         if (salle->pheromone == 0) {
             g = rand() % salle->degre;
+			if (salle->degre > 1)
             while (fourmi->memoire[0] != 0 && g == fourmi->memoire[3 + fourmi->memoire[0] - 1]) {
                 g = rand() % salle->degre;
             }
