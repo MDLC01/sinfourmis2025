@@ -35,8 +35,14 @@ class ReineAction(IntEnum):
     AMELIORE_DEGATS = 10
     REINE_PASSE = 11
 
+@unique
+class PheromoneType(IntEnum):
+    NO_PHEROMONE = 0
+    PUBLIC = 1
+    PRIVE = 2
 
-def fourmi_retour(action, arg, depose_pheromone=False, pheromone=0):
+
+def fourmi_retour(action, arg, depose_pheromone=PheromoneType.NO_PHEROMONE, pheromone=0):
     return {
         "action": action.value,
         "arg": arg,

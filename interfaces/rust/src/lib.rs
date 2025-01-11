@@ -41,6 +41,15 @@ pub enum ReineAction {
 
 #[repr(C)]
 #[derive(Debug, Clone, Copy)]
+pub enum PheromoneType {
+	NO_PHEROMONE,
+	PRIVE,
+	PUBLIC,
+}
+
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FourmisCompteur {
     pub equipe: u32,
     pub nombre: u32,
@@ -82,7 +91,7 @@ pub struct FourmiEtat {
 pub struct FourmiRetour {
     pub action: FourmiAction,
     pub arg: i32,
-    pub depose_pheromone: bool,
+    pub depose_pheromone: PheromoneType,
     pub pheormone: u8,
 }
 

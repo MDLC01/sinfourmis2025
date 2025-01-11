@@ -5,7 +5,7 @@ let fourmi_activation (etat : Sinfourmis.fourmi_etat) (salle : Sinfourmis.salle)
   else
     print_endline "Fourmi : Je suis une fourmi qui sait compter"
   );
-  {action = FOURMI_PASSE; arg = 0; pheromone = None}
+  {action = FOURMI_PASSE; arg = 0; pheromone_type = NO_PHEROMONE; pheromone = 0}
 
 
 let nb_sent = ref 0

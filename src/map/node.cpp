@@ -97,7 +97,7 @@ void Node::regen_food() {
 void to_json(json &j, const Node &node) {
     j = json{
         {"id", node.id}, {"type", node.type},           {"x", node.x},
-        {"y", node.y},   {"pheromones", node.pheromones},
+        {"y", node.y},   {"pheromones", node.public_pheromone},
     };
     if (node.type == salle_type::NOURRITURE) {
         j["food"] = node.food;

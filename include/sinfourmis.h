@@ -91,10 +91,13 @@ typedef struct fourmi_etat {
 /// Cette structure est renvoyée par la fonction d'activation des fourmis. Elle
 /// décrit le type d'action réalisé à la fin du tour, et contient l'argument de
 /// l'action correspondante (pas toujours nécessaire)
+typedef enum {
+	NO_PHEROMONE, PRIVE, PUBLIC
+} pheromone_type;
 typedef struct fourmi_retour {
     fourmi_action action;
     int32_t arg; // utilisé en argument d'action, type pas gravé dans le marbre pour l'instant
-    bool depose_pheromone;
+    pheromone_type depose_pheromone;
     uint8_t pheromone;
 } fourmi_retour;
 

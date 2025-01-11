@@ -72,8 +72,9 @@ class Ant {
     /**
      * @brief Dig the current edge. Crashes if the ant is not in digging state
      *
+     * @param damages the value to repair the edge
      */
-    void dig();
+    void dig(unsigned int damages);
 
     /**
      * @brief Stop the digging

@@ -170,7 +170,7 @@ reine_retour Dummy::reine_activation(fourmi_etat fourmis[], const size_t nb_four
 fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) {
 
     if (((fourmi->memoire[2] >> 3) & 1)) {
-        return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = false, .pheromone = 0};
+        return {.action = FOURMI_PASSE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
     }
 
     if ((fourmi->memoire[2] >> 7) && ((fourmi->memoire[2] >> 6) & 1)) {
@@ -188,7 +188,7 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
             (fourmi->memoire[2] = (fourmi->memoire[2] & 0x7F) | (0 << 7));
             return {.action = FOURMI_PASSE,
                     .arg = 0,
-                    .depose_pheromone = true,
+                    .depose_pheromone = PRIVE,
                     .pheromone =
                         (uint8_t)((fourmi->result & 0x7F) & (uint8_t((salle->pheromone) ^ 0x80U)))};
         }
@@ -200,7 +200,7 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
 
         return {.action = DEPLACEMENT,
                 .arg = fourmi->memoire[3 + fourmi->memoire[0]],
-                .depose_pheromone = true,
+                .depose_pheromone = PRIVE,
                 .pheromone = pheromone};
     }
 
@@ -211,7 +211,7 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
             (fourmi->memoire[2] = (fourmi->memoire[2] & 0xF7) | (1 << 3));
             return {.action = COMMENCE_CONSTRUCTION,
                     .arg = fourmi->memoire[3 + fourmi->memoire[0] - 1],
-                    .depose_pheromone = false,
+                    .depose_pheromone = NO_PHEROMONE,
                     .pheromone = 0};
         }
         fourmi->memoire[3 + fourmi->memoire[0]] = fourmi->result;
@@ -221,7 +221,7 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
         if (salle->type == NOURRITURE) {
             (fourmi->memoire[2] = (fourmi->memoire[2] & 0x7F) | (1 << 7));
             return {
-                .action = RAMASSE_NOURRITURE, .arg = 0, .depose_pheromone = false, .pheromone = 0};
+                .action = RAMASSE_NOURRITURE, .arg = 0, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
         }
         int g;
         if (salle->pheromone == 0) {
@@ -233,11 +233,11 @@ fourmi_retour Dummy::fourmi_activation(fourmi_etat *fourmi, const salle *salle) 
             g = salle->pheromone & 0x7F;
         }
 
-        return {.action = DEPLACEMENT, .arg = g, .depose_pheromone = false, .pheromone = 0};
+        return {.action = DEPLACEMENT, .arg = g, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
     }
 
     return {.action = FOURMI_PASSE,
             .arg = 0,
-            .depose_pheromone = true,
+            .depose_pheromone = PRIVE,
             .pheromone = (uint8_t((salle->pheromone) ^ 0x80U))};
 }

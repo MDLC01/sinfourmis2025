@@ -120,9 +120,9 @@ void Ant::begin_digging(Edge *edge) {
     current_edge = edge;
 }
 
-void Ant::dig() {
+void Ant::dig(unsigned int damages) {
     assert(action_state == AntActionState::DIGGING);
-    current_edge->dig();
+    current_edge->dig(damages);
 }
 
 void Ant::stop_digging() {

@@ -27,6 +27,11 @@ type reine_action =
   | AMELIORE_DEGATS
   | REINE_PASSE
 
+type pheromone_type =
+  | NO_PHEROMONE
+  | PUBLIC
+  | PRIVE
+
 type salle = {
   salle_type : salle_type;
   pheromone : int;
@@ -45,7 +50,8 @@ type fourmi_etat = {
 type fourmi_retour = {
   action : fourmi_action;
   arg : int;
-  pheromone : int option
+  pheromone_type : pheromone_type;
+  pheromone : int
 }
 
 type reine_etat = {
@@ -64,7 +70,7 @@ type reine_etat = {
 
 type reine_retour = {
   action : reine_action;
-arg : int
+  arg : int
 }
 
 let register_functions

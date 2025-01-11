@@ -27,6 +27,11 @@ type reine_action =
   | AMELIORE_DEGATS
   | REINE_PASSE
 
+type pheromone_type =
+  | NO_PHEROMONE
+  | PUBLIC
+  | PRIVE
+
 type salle = {
   salle_type : salle_type;
   pheromone : int;
@@ -45,11 +50,13 @@ type fourmi_etat = {
 type fourmi_retour = {
   action : fourmi_action;
   arg : int;
-  pheromone : int option
+  pheromone_type : pheromone_type;
+  pheromone : int
 }
 
 type reine_etat = {
   nourriture : int;
+  team_id : int;
   result : int;
   max_nourriture : int;
   max_eau : int;
