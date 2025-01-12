@@ -183,6 +183,9 @@ static uint8_t present_cartographers[CARTOGRAPHER_COUNT] = {
 };
 static int present_cartographer_count = 4;
 
+static vector<int> food_paths_by_me;
+static vector<node> food_paths_by_me_dests;
+
 void handle_cartographer_from_queen(fourmi_etat *ant, vector<int*> food_paths, vector<int> food_paths_len) {
     rw rw = create_rw(ant->memoire);
     rw.offset += TYPE_SIZE + PREVIOUS_WATER_SIZE + CARTOGRAPHER_STATE_SIZE;
@@ -223,6 +226,20 @@ void handle_cartographer_from_queen(fourmi_etat *ant, vector<int*> food_paths, v
     reverse(backward_path.begin(), backward_path.end());
     add_identity(forward_path, backward_path, path_costs, ids, infos);
 
+    // Improve existing food paths.
+    for (int j = 0; j < food_paths_by_me.size(); j++) {
+        int k = food_paths_by_me[j];
+        node n = food_paths_by_me_dests[j];
+        path path = shortest_path(BASE_NODE, n);
+        int new_len = path.size();
+        if (new_len < food_paths_len[k]) {
+            for (int i = 0; i < new_len; i++) {
+                food_paths[k][i] = path[i];
+            }
+            food_paths_len[k] = new_len;
+        }
+    }
+
     // Add new food paths.
     for (node n : food_nodes) {
         path path = shortest_path(BASE_NODE, n);
@@ -233,6 +250,8 @@ void handle_cartographer_from_queen(fourmi_etat *ant, vector<int*> food_paths, v
         }
         food_paths.push_back(allocated_path);
         food_paths_len.push_back(len);
+        food_paths_by_me.push_back(food_paths.size() - 1);
+        food_paths_by_me_dests.push_back(n);
     }
 }
 
