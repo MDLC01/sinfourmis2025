@@ -227,7 +227,7 @@ void handle_cartographer_from_queen(fourmi_etat *ant, vector<int*> food_paths, v
     add_identity(forward_path, backward_path, path_costs, ids, infos);
 
     // Improve existing food paths.
-    for (int j = 0; j < food_paths_by_me.size(); j++) {
+    for (int j = 0; j < (int) food_paths_by_me.size(); j++) {
         int k = food_paths_by_me[j];
         node n = food_paths_by_me_dests[j];
         path path = shortest_path(BASE_NODE, n);
