@@ -1,5 +1,6 @@
 #include <cassert>
 #include <cstdint>
+#include <cstdio>
 #include <vector>
 #include "sinfourmis.h"
 #include "utils.cpp"
@@ -67,13 +68,15 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
     case BIRTH_TURN : {
       turn_type = RELEASE_TURN;
       int diff = etat->max_stockage - nb_fourmis;
+      printf("ok %d %d\n", diff, nourriture_a_depenser);
       if (2*diff < (int)nourriture_a_depenser) {
         nourriture_a_depenser = nourriture_a_depenser - 2*diff;
         return {.action = CREER_FOURMI, .arg = (int32_t)etat->max_stockage};
         }
       else {
+        int32_t fourmi_a_faire_apparaitre = nourriture_a_depenser/2;
         nourriture_a_depenser = 0;
-        return {.action = CREER_FOURMI, .arg = (int32_t)nourriture_a_depenser/2};
+        return {.action = CREER_FOURMI, .arg = fourmi_a_faire_apparaitre};
       }
     }
     case RELEASE_TURN: {
@@ -94,5 +97,5 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
       turn_type = RECUP_TURN;
     }
   }
-  return {.action = REINE_PASSE, .arg=0};
+  assert(false);
 }
