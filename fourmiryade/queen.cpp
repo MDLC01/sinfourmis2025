@@ -16,7 +16,7 @@ queen_turn_t turn_type = BIRTH_TURN;
 int nb_cartographer = 0;
 int nb_explorer = 0;
 
-vector<int*> food_paths = {}; 
+vector<int*> food_paths = {};
 vector<int> food_paths_len = {};
 
 uint32_t ancien_compte_nourriture = 0;
@@ -43,7 +43,7 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
         break;
       }
       case CARTOGRAPHER : {
-        handle_cartographer_from_queen(&(fourmis[i]));
+        handle_cartographer_from_queen(&(fourmis[i]), food_paths, food_paths_len);
         nb_cartographer++;
         break;
       }

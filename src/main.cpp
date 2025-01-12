@@ -82,6 +82,12 @@ int main(int argc, char **argv) {
         .default_value(false)
         .flag();
 
+	program.add_group("Gala:");
+	program.add_argument("-g", "--gala")
+		.help("Disable teams")
+		.default_value(false)
+		.flag();
+
     try {
         program.parse_args(argc, argv);
     } catch (const std::runtime_error &err) {
@@ -91,7 +97,7 @@ int main(int argc, char **argv) {
     }
 
     Map map;
-    if (!map.load(program.get<std::string>("map"))) {
+    if (!map.load(program.get<std::string>("map"), program.get<bool>("gala"))) {
         return 2;
     }
     if (program["check"] == true) {

@@ -53,12 +53,12 @@
 		{
 			"id": 1,
 			"name": "team1",
-			"color": "red"
+			"color": "ff0000"
 		},
 		{
 			"id": 2,
 			"name": "team2",
-			"color": "blue"
+			"color": "0000ff"
 		}
 	],
 	"base_food": 20

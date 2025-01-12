@@ -342,7 +342,7 @@ void Debugger::display_element(const Map &map, const std::vector<std::unique_ptr
         std::cout << "Teams: " << map.get_team_count() << "\n";
         std::cout << "Ants: " << ants.size() << "\n";
         for (const auto &team : map.get_teams()) {
-            std::cout << "Team " << team.get_name() << " (" << team.get_id()
+            std::cout << "Team " << team.get_name() << " (" << team.get_id(false)
                       << ") score: " << team.get_score() << "\n";
         }
     } else if (type == "node") {
@@ -370,7 +370,7 @@ void Debugger::display_element(const Map &map, const std::vector<std::unique_ptr
         print_ant(display_mode, **ant);
     } else if (type == "queen") {
         const auto &queen = std::ranges::find_if(
-            queens, [uid1](const auto &queen) { return queen->get_team_id() == uid1; });
+            queens, [uid1](const auto &queen) { return queen->get_team_id(false) == uid1; });
         if (queen == queens.end()) {
             std::cerr << "Queen not found\n";
             return;
@@ -406,7 +406,7 @@ void Debugger::list_elements(const Map &map, const std::vector<std::unique_ptr<A
     } else if (type == "queens") {
         std::cout << "== Queens ==\n";
         for (const auto &queen : queens) {
-            std::cout << "Queen :" << queen->get_team_id() << "\n";
+            std::cout << "Queen :" << queen->get_team_id(false) << "\n";
         }
     } else {
         std::cerr << "Invalid type\n";

@@ -156,7 +156,7 @@ void Animation::end_frame(const std::vector<std::unique_ptr<Queen>> &queens) {
             frame["teams"][i]["next"]["score"] = teams[i].get_score();
         }
         const auto &queen = std::ranges::find_if(queens, [&teams, i](const auto &queen) {
-            return queen->get_team_id() == teams[i].get_id();
+            return queen->get_team_id(false) == teams[i].get_id(false);
         });
         assert(queen != queens.end());
         if ((*queen)->is_upgrading()) {

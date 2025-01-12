@@ -46,7 +46,7 @@ std::ostream &operator<<(std::ostream &os, const Queen::QueenStat &stat) {
 
 std::ostream &operator<<(std::ostream &os, const Queen &queen) {
     os << "===== Queen =====" << std::endl;
-    os << "Team: " << queen.team->get_id() << std::endl;
+    os << "Team: " << queen.team->get_id(false) << std::endl;
     os << "Stats:" << std::endl;
     for (uint32_t i = 0; i < 4; i++) {
         os << "\t" << Queen::Stat(i) << ": " << queen.stats[i] << std::endl;
@@ -86,7 +86,7 @@ bool Queen::upgrade(Stat type) {
     }
     upgrading = IsUpgrading::ANTS;
     current_ants_upgrade = type;
-    std::cout << "Queen " << team->get_id() << " upgrade " << (unsigned int)type << std::endl;
+    std::cout << "Queen " << team->get_id(false) << " upgrade " << (unsigned int)type << std::endl;
     if (type == Stat::WATER) {
         stats[(unsigned int)type] += 5;
     } else {
@@ -105,7 +105,7 @@ bool Queen::upgrade_queen(QueenStat type) {
     }
     upgrading = IsUpgrading::QUEEN;
     current_queen_upgrade = type;
-    std::cout << "Queen " << team->get_id() << " upgrade " << (unsigned int)type << std::endl;
+    std::cout << "Queen " << team->get_id(false) << " upgrade " << (unsigned int)type << std::endl;
     switch (type) {
         case QueenStat::UPGRADE_DURATION:
             {
@@ -154,7 +154,7 @@ uint32_t Queen::get_queen_stat(QueenStat type) const {
 reine_etat Queen::as_reine_etat() const {
     reine_etat etat;
     etat.result = result;
-	etat.team_id = team->get_id();
+	etat.team_id = team->get_id(false);
     etat.nourriture = team->get_food();
     etat.max_nourriture = get_stat(Stat::FOOD);
     etat.max_eau = get_stat(Stat::WATER);
