@@ -80,7 +80,7 @@ path shortest_path(node source, node destination) {
     vector<float> dist(MAX_NODES, 1.0 / 0.0);
     vector<node> prev(MAX_NODES, -1);
     vector<node> queue;
-    for (node n = 1; n <= 255; n++) {
+    for (int n = 1; n <= 255; n++) {
         if (is_known[n]) {
             queue.push_back(n);
         }
@@ -100,7 +100,7 @@ path shortest_path(node source, node destination) {
         }
         queue[index] = queue.back();
         queue.pop_back();
-        for (node v = 1; v <= 255; v++) {
+        for (int v = 1; v <= 255; v++) {
             if (adj[u][v] >= 0) {
                 float alt = dist[u] + costs[u][v];
                 if (alt < dist[v]) {
@@ -218,7 +218,7 @@ void initialize_cartographer(fourmi_etat *ant, int cartographer_id) {
     write_number(&rw, PREVIOUS_WATER_SIZE, 0); // Whatever.
     write_number(&rw, CARTOGRAPHER_STATE_SIZE, CARTOGRAPHER_STARTS);
     align_rw(&rw);
-    write_number(&rw, 8, (cartographer_id << 6) + 1);
+    write_number(&rw, CELL_ID_SIZE, (cartographer_id << 6) + 1);
     write_number(&rw, PATH_LENGTH_SIZE, 0);
 }
 
@@ -241,7 +241,7 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
 
     align_rw(rw);
     auto rw_at_next_cell_id = clone_rw(rw);
-    uint8_t next_cell_id = read_number(rw, 8);
+    uint8_t next_cell_id = read_number(rw, CELL_ID_SIZE);
 
     auto rw_at_path_length = clone_rw(rw);
     int path_length = read_and_increment(rw, PATH_LENGTH_SIZE);
@@ -254,9 +254,10 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
     uint8_t current_id = 0;
     if (salle->pheromone == 0) {
         if (next_cell_id % CARTOGRAPHER_COUNT != 0) {
-            pheromone = next_cell_id++;
+            pheromone = next_cell_id;
             depose_pheromone = PRIVE;
             current_id = pheromone;
+            write_number(&rw_at_next_cell_id, CELL_ID_SIZE, next_cell_id + 1);
         }
     } else {
         current_id = salle->pheromone;
@@ -287,6 +288,7 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             choice c = rand() % salle->degre;
             write_number(rw, PATH_NODE_INFO_NEXT_SIZE, c);
             write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_TRIED_MOVING);
+            write_number(&rw_at_path_length, PATH_LENGTH_SIZE, path_length + 1);
             return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = depose_pheromone, .pheromone = pheromone};
         }
 
