@@ -77,7 +77,8 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
           };
         }
         else if (salle->type == NOURRITURE && salle->pheromone == 0) {
-          forward = 0;
+          set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION); //state
+          set_number(etat->memoire, octet(2)-1, octet(2), 0); //forward
           set_number(etat->memoire, octet(4), octet(5), 1); // success
           set_number(etat->memoire, octet(6), octet(7), position); //path_len
           return {
