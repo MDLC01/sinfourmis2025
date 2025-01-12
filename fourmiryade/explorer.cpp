@@ -85,7 +85,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
             .action = RAMASSE_NOURRITURE,
             .arg = 0,
             .depose_pheromone = PRIVE,
-            .pheromone = 0 //TODO EXPLORER_FOOD
+            .pheromone = EXPLORER_FOOD
           };
         } else if (etat->result == -2) {
           int direction = (int)get_number(etat->memoire, EXPLORER_HEADER_END + octet(position), EXPLORER_HEADER_END + octet(position)+1);
