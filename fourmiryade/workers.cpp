@@ -1,3 +1,6 @@
+#ifndef FILE_WORKERS 
+#define FILE_WORKERS
+
 #include "sinfourmis.h"
 #include "memory.cpp"
 #include "utils.cpp"
@@ -35,7 +38,7 @@ typedef enum {
 void initialize_worker(fourmi_etat *etat, vector<int*>food_paths, vector<int>food_paths_len){
   set_number(etat->memoire, octet(0), octet(1), WORKER);
   set_number(etat->memoire, octet(1), octet(2)-1, WORKER_ENDED_ACTION);
-  set_bit(etat->memoire, octet(2)-1, 1);
+  set_number(etat->memoire, octet(2)-1, octet(2), 1);
   set_number(etat->memoire, octet(3), octet(4), 0);
   int id_path = rand()%food_paths.size();
   set_number(etat->memoire, octet(4), octet(5), food_paths_len[id_path]);
@@ -62,7 +65,7 @@ fourmi_retour worker_activation(fourmi_etat *etat, const salle *salle) {
         if (position == path_length && forward) {
           assert(salle->type == NOURRITURE);
           set_number(etat->memoire, octet(1), octet(2)-1, WORKER_ENDED_ACTION);
-          set_bit(etat->memoire, octet(2)-1, 0);
+          set_number(etat->memoire, octet(2)-1, octet(2), 0);
           return {
             .action = RAMASSE_NOURRITURE,
             .arg = 0,
@@ -148,3 +151,4 @@ fourmi_retour worker_activation(fourmi_etat *etat, const salle *salle) {
         assert(false);
     }
 }
+#endif

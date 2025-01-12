@@ -1,3 +1,6 @@
+#ifndef  FILE_EXPLORER
+#define FILE_EXPLORER
+
 #include "sinfourmis.h"
 #include "memory.cpp"
 #include "utils.cpp"
@@ -35,10 +38,19 @@ typedef enum {
 void initialize_explorer(fourmi_etat *etat, int max_water){
   set_number(etat->memoire, octet(0), octet(1), EXPLORER); // type de fourmi
   set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION); // state
-  set_bit(etat->memoire, octet(2)-1, 1); //forward
+  set_number(etat->memoire, octet(2)-1, octet(2), 1); //forward
   set_number(etat->memoire, octet(3), octet(4), 0); //result
   set_number(etat->memoire, octet(5), octet(6), max_water); // max_water
   set_number(etat->memoire, octet(6), octet(7), 0); // path_len
+
+
+  for (int i=0; i<30; i++) {
+      if (i%4 == 0) {
+          printf(" ");
+      }
+      printf("%d", get_bit(etat->memoire, i));
+  }
+  printf("\n");
 }
 
 void handle_explorer_from_queen (fourmi_etat* etat, vector<int*> food_paths, vector<int> food_paths_len) {
@@ -73,7 +85,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
             .pheromone=0
           };
         }
-        else if (salle->type == NOURRITURE && salle->pheromone != 0b00000001) {
+        else if (salle->type == NOURRITURE && salle->pheromone == 0) {
           forward = 0;
           set_number(etat->memoire, octet(4), octet(5), 1); // success
           set_number(etat->memoire, octet(6), octet(7), position); //path_len
@@ -81,7 +93,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
             .action = RAMASSE_NOURRITURE,
             .arg = 0,
             .depose_pheromone = PRIVE,
-            .pheromone = 0b00000001
+            .pheromone = 0 //TODO EXPLORER_FOOD
           };
         } else if (etat->result == -2) {
           int direction = (int)get_number(etat->memoire, EXPLORER_HEADER_END + octet(position), EXPLORER_HEADER_END + octet(position)+1);
@@ -151,7 +163,18 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
           .pheromone=0
         };
       }
-      default:
-        assert(false);
+      default: {
+        fprintf(stderr, "--%d\n", state);
+        for (int i=0; i<30; i++) {
+            if (i%4 == 0) {
+                printf(" ");
+            }
+            printf("%d", get_bit(etat->memoire, i));
+        }
+        printf("\n");
+        assert(false); 
+      }
     }
 }
+
+#endif

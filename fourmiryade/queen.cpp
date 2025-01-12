@@ -1,3 +1,4 @@
+#include <cassert>
 #include <cstdint>
 #include <vector>
 #include "sinfourmis.h"
@@ -93,4 +94,5 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
       turn_type = RECUP_TURN;
     }
   }
+  return {.action = REINE_PASSE, .arg=0};
 }
