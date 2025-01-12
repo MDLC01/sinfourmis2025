@@ -1,10 +1,8 @@
 #include "sinfourmis.h"
-#include "structures.cpp"
 #include "memory.cpp"
-#include "structures.cpp"
+#include "utils.cpp"
+#include <vector>
 
-#include <cassert>
-#include <stdlib.h>
 using namespace std;
 
 #define PATH_NODE_SIZE 8
@@ -31,18 +29,22 @@ typedef enum {
 
 
 // memory of a worker : state, forward, position, path_length, mem
-#define HEADER_END octet(5)
-#define acces_direction(pos) HEADER_END + octet(pos)
+#define WORKER_HEADER_END octet(5)
+#define work_acces_direction(pos) WORKER_HEADER_END + octet(pos)
 
-void initialize_worker(fourmi_etat *etat, int* path, int path_length){
+void initialize_worker(fourmi_etat *etat, vector<int*>food_paths, vector<int>food_paths_len){
   set_number(etat->memoire, octet(0), octet(1), WORKER);
   set_number(etat->memoire, octet(1), octet(2)-1, WORKER_ENDED_ACTION);
   set_bit(etat->memoire, octet(2)-1, 1);
   set_number(etat->memoire, octet(3), octet(4), 0);
-  set_number(etat->memoire, octet(4), octet(5), path_length);
-  for (int i=0; i<path_length; i++) {
-    set_number(etat->memoire, acces_direction(i), acces_direction(i+1), path[i]);
+  int id_path = rand()%food_paths.size();
+  set_number(etat->memoire, octet(4), octet(5), food_paths_len[id_path]);
+  for (int i=0; i<food_paths_len[id_path]; i++) {
+    set_number(etat->memoire, work_acces_direction(i), work_acces_direction(i+1), food_paths[id_path][i]);
   }
+}
+
+void handle_worker_from_queen (fourmi_etat* etat) {
 }
 
 
@@ -77,7 +79,7 @@ fourmi_retour worker_activation(fourmi_etat *etat, const salle *salle) {
           };
         }
         else if (etat->result == -2) {
-          int direction = (int)get_number(etat->memoire, HEADER_END + octet(position), HEADER_END + octet(position)+1);
+          int direction = (int)get_number(etat->memoire, WORKER_HEADER_END + octet(position), WORKER_HEADER_END + octet(position)+1);
           set_number(etat->memoire, octet(1), octet(2)-1, WORKER_BUILT_1);
           return {
             .action=COMMENCE_CONSTRUCTION,
@@ -94,8 +96,8 @@ fourmi_retour worker_activation(fourmi_etat *etat, const salle *salle) {
             position -=1;
           }
           set_number(etat->memoire, octet(3), octet(4), position);
-          int direction = (int)get_number(etat->memoire, acces_direction(position), acces_direction(position+1));
-          set_number(etat->memoire, acces_direction(position), acces_direction(position+1), etat->result);
+          int direction = (int)get_number(etat->memoire, work_acces_direction(position), work_acces_direction(position+1));
+          set_number(etat->memoire, work_acces_direction(position), work_acces_direction(position+1), etat->result);
           set_number(etat->memoire, octet(1), octet(2)-1, WORKER_MOVED);
           return {
             .action=DEPLACEMENT,
@@ -133,7 +135,7 @@ fourmi_retour worker_activation(fourmi_etat *etat, const salle *salle) {
         };
       }
       case WORKER_ENDED_ACTION: {
-        int direction = (int)get_number(etat->memoire, acces_direction(position), acces_direction(position+1));
+        int direction = (int)get_number(etat->memoire, work_acces_direction(position), work_acces_direction(position+1));
         set_number(etat->memoire, octet(1), octet(2)-1, WORKER_MOVED);
         return {
           .action=DEPLACEMENT,

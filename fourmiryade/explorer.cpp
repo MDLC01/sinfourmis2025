@@ -1,150 +1,157 @@
+#include "sinfourmis.h"
 #include "memory.cpp"
 #include "utils.cpp"
-#include "sinfourmis.h"
+#include <vector>
 
-#define PHEROMONE_EXPLORED 0b00010000
+using namespace std;
 
-typedef enum {
-    EXPLORER_FOLLOWS_INITIAL_PATH,
-    EXPLORER_EXPLORES,
-    EXPLORER_BACKS_UP,
-    NUM_EXPLORER_PHASES,
-} explorer_phase;
-#define EXPLORER_PHASE_SIZE ceil_log2(NUM_EXPLORER_PHASES)
+#define PATH_NODE_SIZE 8
+#define PATH_POSITION_SIZE 8
+#define octet(x) (8*(x))
+/**
+ * le fighter doit récupérer un chemin correspondant à une salle avec de l'eau vérifier qu'il n'y a pas de fighter dessus
+ * et s'y diriger : c'est la reine qui lui donne le chemin !
+ * cette fonction n'est donc utilisée que par la reine
+ */
 
-typedef enum {
-    SUE_TRIED_MOVING,
-    SUE_DIGGED_1,
-    SUE_DIGGED_2,
-    SUE_DIGGED_3,
-    SUE_DIGGED_4,
-    NUM_SUE_STATES,
-} setting_up_explorer_state;
-#define SUE_STATE_SIZE ceil_log2(NUM_SUE_STATES)
 
-#define SUE_PATH_OFFSET_SIZE 10
-#define SUE_LAST_DEGREE_SIZE 4
+
 
 typedef enum {
-    EXPLORER_STARTS,
-    EXPLORER_TRIED_MOVING,
-    EXPLORER_DIGGED_1,
-    EXPLORER_DIGGED_2,
-    EXPLORER_DIGGED_3,
-    NUM_EXPLORER_STATES,
+    EXPLORER_MOVED,
+    EXPLORER_BUILT_1,
+    EXPLORER_BUILT_2,
+    EXPLORER_BUILT_3,
+    EXPLORER_ENDED_ACTION,
+    NUM_EXPLORER_STATES
 } explorer_state;
 #define EXPLORER_STATE_SIZE ceil_log2(NUM_EXPLORER_STATES)
 
-fourmi_retour explorer_activation(fourmi_etat *etat, rw *rw, const salle *salle) {
-    auto rw_at_phase = clone_rw(rw);
-    explorer_phase phase = (explorer_phase) read_number(rw, EXPLORER_PHASE_SIZE);
-    switch (phase) {
-        case EXPLORER_FOLLOWS_INITIAL_PATH: {
-            auto rw_at_state = clone_rw(rw);
-            setting_up_explorer_state state = (setting_up_explorer_state) read_number(rw, SUE_STATE_SIZE);
-            switch (state) {
-                case SUE_TRIED_MOVING: {
-                    // TODO: Change phase when the path ends.
-                    auto rw_at_last_degree = clone_rw(rw);
-                    int last_degree = read_number(rw, SUE_LAST_DEGREE_SIZE);
-                    int path_offset = read_number(rw, SUE_PATH_OFFSET_SIZE);
-                    rw->offset += path_offset;
-                    if (etat->result < 0) {
-                        // Unable to move.
-                        int choice_size = ceil_log2(salle->degre);
-                        choice c = read_number(rw, choice_size);
-                        write_number(&rw_at_state, SUE_STATE_SIZE, (unsigned long long) SUE_DIGGED_1);
-                        return {.action = ATTAQUE_TUNNEL, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                    }
-                    rw->offset += ceil_log2(last_degree);
-                    write_number(&rw_at_last_degree, SUE_LAST_DEGREE_SIZE, salle->degre);
-                    write_number(&rw_at_last_degree, SUE_PATH_OFFSET_SIZE, rw->offset);
-                    int choice_size = ceil_log2(salle->degre);
-                    choice c = read_number(rw, choice_size);
-                    return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                }
-                case SUE_DIGGED_1: {
-                    auto rw_at_last_degree = clone_rw(rw);
-                    int last_degree = read_number(rw, SUE_LAST_DEGREE_SIZE);
-                    int path_offset = read_number(rw, SUE_PATH_OFFSET_SIZE);
-                    rw->offset += path_offset;
-                    int choice_size = ceil_log2(salle->degre);
-                    choice c = read_number(rw, choice_size);
-                    write_number(&rw_at_state, SUE_STATE_SIZE, (unsigned long long) SUE_DIGGED_2);
-                    return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                }
-                case SUE_DIGGED_2: {
-                    auto rw_at_last_degree = clone_rw(rw);
-                    int last_degree = read_number(rw, SUE_LAST_DEGREE_SIZE);
-                    int path_offset = read_number(rw, SUE_PATH_OFFSET_SIZE);
-                    rw->offset += path_offset;
-                    int choice_size = ceil_log2(salle->degre);
-                    choice c = read_number(rw, choice_size);
-                    write_number(&rw_at_state, SUE_STATE_SIZE, (unsigned long long) SUE_DIGGED_3);
-                    return {.action = FOURMI_PASSE, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                }
-                case SUE_DIGGED_3: {
-                    auto rw_at_last_degree = clone_rw(rw);
-                    int last_degree = read_number(rw, SUE_LAST_DEGREE_SIZE);
-                    int path_offset = read_number(rw, SUE_PATH_OFFSET_SIZE);
-                    rw->offset += path_offset;
-                    int choice_size = ceil_log2(salle->degre);
-                    choice c = read_number(rw, choice_size);
-                    write_number(&rw_at_state, SUE_STATE_SIZE, (unsigned long long) SUE_DIGGED_4);
-                    return {.action = TERMINE_CONSTRUCTION, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                }
-                case SUE_DIGGED_4: {
-                    auto rw_at_last_degree = clone_rw(rw);
-                    int last_degree = read_number(rw, SUE_LAST_DEGREE_SIZE);
-                    int path_offset = read_number(rw, SUE_PATH_OFFSET_SIZE);
-                    rw->offset += path_offset;
-                    int choice_size = ceil_log2(salle->degre);
-                    choice c = read_number(rw, choice_size);
-                    write_number(&rw_at_state, SUE_STATE_SIZE, (unsigned long long) SUE_TRIED_MOVING);
-                    return {.action = DEPLACEMENT, .arg = c, .depose_pheromone = NO_PHEROMONE, .pheromone = 0};
-                }
-                case NUM_SUE_STATES: {
-                    assert(false);
-                }
-            }
-            break;
+
+// memory of a explorer : state, forward, position, path_length, mem
+#define EXPLORER_HEADER_END octet(7)
+#define exp_acces_direction(pos) EXPLORER_HEADER_END + octet(pos)
+
+void initialize_explorer(fourmi_etat *etat, int max_water){
+  set_number(etat->memoire, octet(0), octet(1), EXPLORER); // type de fourmi
+  set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION); // state
+  set_bit(etat->memoire, octet(2)-1, 1); //forward
+  set_number(etat->memoire, octet(3), octet(4), 0); //result
+  set_number(etat->memoire, octet(5), octet(6), max_water); // max_water
+  set_number(etat->memoire, octet(6), octet(7), 0); // path_len
+}
+
+void handle_explorer_from_queen (fourmi_etat* etat, vector<int*> food_paths, vector<int> food_paths_len) {
+  if (get_number(etat->memoire, octet(3), octet(4))){
+    int path_len = get_number(etat->memoire, octet(6), octet(7));
+    int* path = (int*) malloc(path_len*sizeof(int));
+    food_paths.push_back(path);
+    food_paths_len.push_back(path_len);
+  }
+}
+
+
+
+fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
+    
+    explorer_state state = (explorer_state) get_number(etat->memoire, octet(1), octet(2)-1);
+
+    bool forward = (bool) get_number(etat->memoire, octet(2)-1, octet(2));
+    int position = (int) get_number(etat->memoire, octet(3), octet(4));
+    int max_water = (int) get_number(etat->memoire, octet(5), octet(6));
+    switch (state) {
+      case EXPLORER_MOVED: {
+        if (etat->eau <= max_water/2+5) {
+          forward = 0;
+        } 
+
+        if (forward == 0 && position == 0) {
+          return {
+            .action=FOURMI_PASSE,
+            .arg=0,
+            .depose_pheromone=NO_PHEROMONE,
+            .pheromone=0
+          };
         }
-
-
-//   si trajet vers source de départ :
-//     suivre le chemin
-//   si trajet aller :
-//     si case de nourriture ou d'eau non-explorée :
-//       la marquer comme explorée
-//       collecter de la nourriture
-//       passer au trajet retour
-//     sinon si limite d'eau ou de mémoire :
-//       passer au trajet retour
-//     sinon :
-//       si précédente action était un déplacement réussi :
-//         noter le résultat du déplacement précédent (dans trajet retour) + modifier la position dans le chemin
-//         choisir une direction aléatoire
-//         la noter dans le chemin aller
-//       déplacement-construction (edge)
-//   si trajet retour :
-//     suivre le chemin retour
-
-        case EXPLORER_EXPLORES: {
-            // TODO: Continuer par ici...
-            if ((salle->nourriture > 0 || salle->type == EAU) && (salle->pheromone & PHEROMONE_EXPLORED) != 0) {
-                write_number(&rw_at_phase, EXPLORER_PHASE_SIZE, EXPLORER_BACKS_UP);
-                return {.action = RAMASSE_NOURRITURE, .arg = 0, .depose_pheromone = PUBLIC, .pheromone = PHEROMONE_EXPLORED};
-            }
+        else if (salle->type == NOURRITURE && salle->pheromone != 0b00000001) {
+          forward = 0;
+          set_number(etat->memoire, octet(4), octet(5), 1); // success
+          set_number(etat->memoire, octet(6), octet(7), position); //path_len
+          return {
+            .action = RAMASSE_NOURRITURE,
+            .arg = 0,
+            .depose_pheromone = PRIVE,
+            .pheromone = 0b00000001
+          };
+        } else if (etat->result == -2) {
+          int direction = (int)get_number(etat->memoire, EXPLORER_HEADER_END + octet(position), EXPLORER_HEADER_END + octet(position)+1);
+          set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_BUILT_1);
+          return {
+            .action=COMMENCE_CONSTRUCTION,
+            .arg=direction,
+            .depose_pheromone=NO_PHEROMONE,
+            .pheromone=0
+          };
+        } else {
+          assert(etat->result != -1);
+          int direction;
+          if (forward) {
+            position +=1;
+            direction = rand()%salle->degre;
+          }
+          else {
+            position -=1;
+            direction = (int)get_number(etat->memoire, exp_acces_direction(position), exp_acces_direction(position+1));
+          }
+          set_number(etat->memoire, octet(3), octet(4), position);
+          set_number(etat->memoire, exp_acces_direction(position), exp_acces_direction(position+1), etat->result);
+          set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_MOVED);
+          return {
+            .action=DEPLACEMENT,
+            .arg=direction, 
+            .depose_pheromone=NO_PHEROMONE, 
+            .pheromone=0
+          };
         }
-
-        case EXPLORER_BACKS_UP: {
-            return;
-        }
-
-        case NUM_EXPLORER_PHASES: {
-            assert(false);
-        }
+      }
+      case  EXPLORER_BUILT_1: {
+        set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_BUILT_2);
+        return {
+          .action=FOURMI_PASSE,
+          .arg=0,
+          .depose_pheromone = NO_PHEROMONE,
+          .pheromone = 0
+        };
+      }
+      case EXPLORER_BUILT_2: {
+        set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_BUILT_2);
+        return {
+          .action=FOURMI_PASSE,
+          .arg=0,
+          .depose_pheromone = NO_PHEROMONE,
+          .pheromone = 0
+        };
+      }
+      case EXPLORER_BUILT_3: {
+        set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION);
+        return {
+          .action=TERMINE_CONSTRUCTION,
+          .arg=0,
+          .depose_pheromone=NO_PHEROMONE,
+          .pheromone=0
+        };
+      }
+      case EXPLORER_ENDED_ACTION: {
+        int direction = (int)get_number(etat->memoire, exp_acces_direction(position), exp_acces_direction(position+1));
+        set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_MOVED);
+        return {
+          .action=DEPLACEMENT,
+          .arg=direction, 
+          .depose_pheromone=NO_PHEROMONE, 
+          .pheromone=0
+        };
+      }
+      default:
+        assert(false);
     }
-
-    assert(false);
 }

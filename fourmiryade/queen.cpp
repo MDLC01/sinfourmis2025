@@ -1,9 +1,11 @@
 #include <cstdint>
+#include <vector>
 #include "sinfourmis.h"
 #include "utils.cpp"
 #include "memory.cpp"
-
-
+#include "cartographer.cpp"
+#include "workers.cpp"
+#include "explorer.cpp"
 
 using namespace std;
 
@@ -12,6 +14,9 @@ queen_turn_t turn_type = BIRTH_TURN;
 
 int nb_cartographer = 0;
 int nb_explorer = 0;
+
+vector<int*> food_paths = {}; 
+vector<int> food_paths_len = {};
 
 uint32_t ancien_compte_nourriture = 0;
 uint32_t nourriture_a_depenser = 0;
@@ -32,17 +37,17 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
     type_fourmi fourmi = read_type(&mem);
     switch (fourmi) {
       case EXPLORER:{
-        // TODO : read explorer memory
+        handle_explorer_from_queen(&(fourmis[i]), food_paths, food_paths_len);
         nb_explorer ++;
         break;
       }
       case CARTOGRAPHER : {
-        // TODO : read cartographer memory
+        handle_cartographer_from_queen(&(fourmis[i]));
         nb_cartographer++;
         break;
       }
       case WORKER:{
-        // TODO : read worker memory
+        handle_worker_from_queen(&(fourmis[i]));
         break;
       }
       case VARIANT_COUNT: {
@@ -54,31 +59,38 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
     }
   }
   switch (turn_type) {
-    case RECUP_TURN: //TODO
+    case RECUP_TURN:{
       turn_type = BIRTH_TURN;
-      // Si une fourmi récupérée est une cartographe, appeler `handle_cartographer_from_queen(ant)` et la renvoyer directement.
       return {.action = RECUPERER_FOURMI, .arg=0};
-
-
-    case BIRTH_TURN : //TODO
+    }
+    case BIRTH_TURN : {
       turn_type = RELEASE_TURN;
-      return {.action = CREER_FOURMI, .arg=0};
-
-    case RELEASE_TURN: //TODO
+      int diff = etat->max_stockage - nb_fourmis;
+      if (2*diff < (int)nourriture_a_depenser) {
+        nourriture_a_depenser = nourriture_a_depenser - 2*diff;
+        return {.action = CREER_FOURMI, .arg = (int32_t)etat->max_stockage};
+        }
+      else {
+        nourriture_a_depenser = 0;
+        return {.action = CREER_FOURMI, .arg = (int32_t)nourriture_a_depenser/2};
+      }
+    }
+    case RELEASE_TURN: {
       for (unsigned int i=0; i<nb_fourmis; i++) {
         if (nb_cartographer != 0) {
           nb_cartographer --;
-          // TODO : set cartographer memory
+          initialize_cartographer(&(fourmis[i]), rand()%4);
         }
         else if (nb_explorer != 0) {
           nb_explorer --;
-          // TODO : set explorer memory
+          initialize_explorer(&(fourmis[i]), etat->max_eau);
         }
         else {
-          // TODO : set worker memory
+          initialize_worker(&(fourmis[i]), food_paths, food_paths_len);
         }
       }
       return {.action = ENVOYER_FOURMI, .arg=0};
       turn_type = RECUP_TURN;
+    }
   }
 }
