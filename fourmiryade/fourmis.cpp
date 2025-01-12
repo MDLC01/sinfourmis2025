@@ -15,7 +15,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
     rw rw = create_rw(etat->memoire);
     type_fourmi type = read_type(&rw);
 
-    switch (read_type(&rw)) {
+    switch (type) {
         case EXPLORER: {
             return explorer_activation(etat, salle);
         }
