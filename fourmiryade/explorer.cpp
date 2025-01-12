@@ -42,15 +42,6 @@ void initialize_explorer(fourmi_etat *etat, int max_water){
   set_number(etat->memoire, octet(3), octet(4), 0); //result
   set_number(etat->memoire, octet(5), octet(6), max_water); // max_water
   set_number(etat->memoire, octet(6), octet(7), 0); // path_len
-
-
-  for (int i=0; i<30; i++) {
-      if (i%4 == 0) {
-          printf(" ");
-      }
-      printf("%d", get_bit(etat->memoire, i));
-  }
-  printf("\n");
 }
 
 void handle_explorer_from_queen (fourmi_etat* etat, vector<int*> food_paths, vector<int> food_paths_len) {
@@ -65,7 +56,7 @@ void handle_explorer_from_queen (fourmi_etat* etat, vector<int*> food_paths, vec
 
 
 fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
-    
+
     explorer_state state = (explorer_state) get_number(etat->memoire, octet(1), octet(2)-1);
 
     bool forward = (bool) get_number(etat->memoire, octet(2)-1, octet(2));
@@ -75,7 +66,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
       case EXPLORER_MOVED: {
         if (etat->eau <= max_water/2+5) {
           forward = 0;
-        } 
+        }
 
         if (forward == 0 && position == 0) {
           return {
@@ -120,8 +111,8 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
           set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_MOVED);
           return {
             .action=DEPLACEMENT,
-            .arg=direction, 
-            .depose_pheromone=NO_PHEROMONE, 
+            .arg=direction,
+            .depose_pheromone=NO_PHEROMONE,
             .pheromone=0
           };
         }
@@ -158,8 +149,8 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
         set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_MOVED);
         return {
           .action=DEPLACEMENT,
-          .arg=direction, 
-          .depose_pheromone=NO_PHEROMONE, 
+          .arg=direction,
+          .depose_pheromone=NO_PHEROMONE,
           .pheromone=0
         };
       }
@@ -172,7 +163,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
             printf("%d", get_bit(etat->memoire, i));
         }
         printf("\n");
-        assert(false); 
+        assert(false);
       }
     }
 }
