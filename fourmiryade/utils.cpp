@@ -8,6 +8,7 @@ using namespace std;
 #define MAX_NODES 256
 #define UNKNOWN_NODE 0b00000000
 #define BASE_NODE 0b01000000
+#define EXPLORER_FOOD 0b10000000
 
 typedef uint8_t choice;
 typedef uint8_t node;

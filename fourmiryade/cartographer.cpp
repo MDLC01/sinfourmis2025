@@ -183,7 +183,7 @@ static uint8_t present_cartographers[CARTOGRAPHER_COUNT] = {
 };
 static int present_cartographer_count = 4;
 
-void handle_cartographer_from_queen(fourmi_etat *ant) {
+void handle_cartographer_from_queen(fourmi_etat *ant, vector<int*> food_paths, vector<int> food_paths_len) {
     rw rw = create_rw(ant->memoire);
     rw.offset += TYPE_SIZE + PREVIOUS_WATER_SIZE + CARTOGRAPHER_STATE_SIZE;
     align_rw(&rw);
@@ -196,6 +196,7 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     vector<uint8_t> ids;
     vector<int> path_costs;
     vector<cartographer_node_info> infos;
+    vector<node> food_nodes;
     for (int i = 0; i < path_length; i++) {
         choice next = read_number(&rw, PATH_NODE_INFO_NEXT_SIZE);
         bool food = read_bool(&rw);
@@ -213,11 +214,26 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
         forward_path.push_back(next);
         backward_path.push_back(prev);
         path_costs.push_back(cost);
+        if (food) {
+            food_nodes.push_back(id);
+        }
     }
     // There is technically a last `next` here. We simply ignore it, as this is
     // where the ant would have gone if it were not picked up by the queen.
     reverse(backward_path.begin(), backward_path.end());
     add_identity(forward_path, backward_path, path_costs, ids, infos);
+
+    // Add new food paths.
+    for (node n : food_nodes) {
+        path path = shortest_path(BASE_NODE, n);
+        int len = path.size();
+        int *allocated_path = (int *) malloc(sizeof(int) * len);
+        for (int i = 0; i < len; i++) {
+            allocated_path[i] = path[i];
+        }
+        food_paths.push_back(allocated_path);
+        food_paths_len.push_back(len);
+    }
 }
 
 void initialize_cartographer(fourmi_etat *ant) {
@@ -290,7 +306,8 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
                 write_number(&rw_at_state, CARTOGRAPHER_STATE_SIZE, (unsigned long long) CARTOGRAPHER_DIGGED_1);
                 return {.action = COMMENCE_CONSTRUCTION, .arg = c, .depose_pheromone = depose_pheromone, .pheromone = pheromone};
             }
-            write_bool(rw, salle->nourriture > 0);
+            // If the food was already detected by an explorer, we don't duplicate it.
+            write_bool(rw, salle->nourriture > 0 && salle->pheromone != EXPLORER_FOOD);
             write_bool(rw, salle->type == EAU);
             write_number(rw, PATH_NODE_INFO_ID_SIZE, current_id);
             write_number(rw, PATH_NODE_INFO_PREV_SIZE, etat->result);
