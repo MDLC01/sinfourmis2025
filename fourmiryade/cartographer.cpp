@@ -1,9 +1,8 @@
 #pragma once
 
 #include "sinfourmis.h"
-#include "structures.cpp"
+#include "utils.cpp"
 #include "memory.cpp"
-#include "structures.cpp"
 
 #include <stdlib.h>
 #include <map>

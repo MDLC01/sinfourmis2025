@@ -1,7 +1,6 @@
 #include <cstdint>
-#include <map>
 #include "sinfourmis.h"
-#include "structures.cpp"
+#include "utils.cpp"
 #include "memory.cpp"
 
 

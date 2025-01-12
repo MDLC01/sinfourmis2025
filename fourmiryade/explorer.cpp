@@ -1,5 +1,5 @@
 #include "memory.cpp"
-#include "structures.cpp"
+#include "utils.cpp"
 #include "sinfourmis.h"
 
 #define PHEROMONE_EXPLORED 0b00010000
