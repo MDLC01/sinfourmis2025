@@ -78,7 +78,7 @@ bool Map::load_nodes(const json &data) {
                 if (team_it != node.end()) {
                     auto team = team_it->get<unsigned int>();
                     if (std::find_if(teams.begin(), teams.end(), [team](const Team &t) {
-                            return t.get_id() == team;
+                            return t.get_id(false) == team;
                         }) == teams.end()) {
                         std::cerr << "Team not found: " << team << std::endl;
                         return false;
@@ -152,9 +152,7 @@ bool Map::load(const std::string_view &filename, bool gala) {
     }
 	for (auto &team: teams) {
 		team.add_food(base_food);
-		if (gala) {
-			team.set_id(0);
-		}
+		team.set_gala(gala);
 	}
 
     if (!load_nodes(data)) {

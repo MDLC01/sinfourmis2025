@@ -31,7 +31,7 @@ class Map {
      * @return true if the map was loaded successfully
      * @return false if the map could not be loaded because of an error or a malformed data type
      */
-    bool load(const std::string_view &filename);
+    bool load(const std::string_view &filename, bool gala);
 
     /**
      * @brief Function used for debugging purposes to print the map to a .dot file

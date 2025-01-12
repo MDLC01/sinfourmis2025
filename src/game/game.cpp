@@ -11,7 +11,7 @@ void Game::add_interface(unsigned int team, Interface *interface) {
         throw std::runtime_error("Too many interfaces");
     }
 
-    interfaces.emplace(map.get_team(team).get_id(), interface);
+    interfaces.emplace(map.get_team(team).get_id(false), interface);
 }
 
 Game &Game::getInstance() {
@@ -44,7 +44,7 @@ void Game::fourmi_action(Ant *ant) {
 	auto nourriture = etat.nourriture;
 	auto vie = etat.vie;
     auto room = ant->get_current_node()->as_salle(ant->get_team_id());
-    auto ant_result = interfaces[ant->get_team_id()]->fourmi_activation(&etat, &room);
+    auto ant_result = interfaces[ant->get_queen()->get_team_id(false)]->fourmi_activation(&etat, &room);
 	etat.eau = eau;
 	etat.nourriture = nourriture;
 	etat.vie = vie;
@@ -158,8 +158,8 @@ void Game::queen_action(Queen *queen, std::vector<std::unique_ptr<Ant>> &ants) {
     }
     auto &memories = queen->get_states();
     auto etat = queen->as_reine_etat();
-    auto salle = queen->get_current_node()->as_salle(queen->get_team_id());
-    auto result = interfaces[queen->get_team_id()]->reine_activation(
+    auto salle = queen->get_current_node()->as_salle(queen->get_team_id(true));
+    auto result = interfaces[queen->get_team_id(false)]->reine_activation(
         memories.data(), memories.size(), &etat, &salle);
     delete[] salle.compteurs_fourmis;
     switch (result.action) {
@@ -239,7 +239,7 @@ void Game::queen_action(Queen *queen, std::vector<std::unique_ptr<Ant>> &ants) {
                 }
                 auto max_gathered = std::min(
                     (uint32_t)result.arg, queen->get_queen_stat(Queen::QueenStat::MAX_STORED_ANTS) - queen->stored_ants());
-                auto node_ants = node->get_team_ants(queen->get_team_id());
+                auto node_ants = node->get_team_ants(queen->get_team_id(true));
 				if (node_ants.size() == 0) {
 					queen->set_result(0);
 				}
@@ -279,7 +279,7 @@ void Game::run(unsigned int duration, unsigned int seed, bool flush, bool debug,
 
     std::vector<std::unique_ptr<Queen>> queens;
     for (auto &team : map.get_teams()) {
-        queens.emplace_back(std::make_unique<Queen>(&team, map.get_starting_node(team.get_id())));
+        queens.emplace_back(std::make_unique<Queen>(&team, map.get_starting_node(team.get_id(false))));
     }
     std::vector<std::unique_ptr<Ant>> ants;
 
@@ -312,7 +312,7 @@ void Game::run(unsigned int duration, unsigned int seed, bool flush, bool debug,
         debugger.debug(animation.game_turn(), map, ants, queens);
     }
     for (auto &team : map.get_teams()) {
-        std::cout << "Team " << team.get_id() << " score: " << team.get_score() << std::endl;
+        std::cout << "Team " << team.get_id(false) << " score: " << team.get_score() << std::endl;
     }
     if (!debugger.exit()) {
         animation.flush();

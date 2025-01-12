@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
     }
 
     Map map;
-    if (!map.load(program.get<std::string>("map"))) {
+    if (!map.load(program.get<std::string>("map"), program.get<bool>("gala"))) {
         return 2;
     }
     if (program["check"] == true) {

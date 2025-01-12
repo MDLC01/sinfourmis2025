@@ -98,7 +98,7 @@ class Ant {
     }
 
     unsigned int get_team_id() const {
-        return queen->get_team_id();
+        return queen->get_team_id(true);
     }
 
     unsigned int get_attack() const {
