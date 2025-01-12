@@ -208,13 +208,8 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
         backward_path.push_back(prev);
         path_costs.push_back(cost);
     }
-    choice next = read_number(&rw, PATH_NODE_INFO_NEXT_SIZE);
-    // FIXME: If the ant did not get picked up immediately, then this is not the right result.
-    choice prev = ant->result;
-    int cost = previous_water - ant->eau;
-    backward_path.push_back(prev);
-    path_costs.push_back(cost);
-    forward_path.push_back(next);
+    // There is technically a last `next` here. We simply ignore it, as this is
+    // where the ant would have gone if it were not picked up by the queen.
     reverse(backward_path.begin(), backward_path.end());
     add_identity(forward_path, backward_path, path_costs, infos);
 }
