@@ -2,6 +2,7 @@
 #include "memory.cpp"
 #include "cartographer.cpp"
 #include "explorer.cpp"
+#include "workers.cpp"
 #include <iostream>
 
 
@@ -31,10 +32,10 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 
     switch (read_type(&rw)) {
         case EXPLORER: {
-            return explorer_activation(etat, &rw, salle);
+            return explorer_activation(etat, salle);
         }
         case WORKER: {
-            // TODO
+            return worker_activation(etat, salle);
             assert(false);
         }
         case CARTOGRAPHER: {
