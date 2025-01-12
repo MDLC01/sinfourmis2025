@@ -43,7 +43,7 @@ void initialize_worker(fourmi_etat *etat, vector<int*>food_paths, vector<int>foo
   int id_path = rand()%food_paths.size();
   set_number(etat->memoire, octet(4), octet(5), food_paths_len[id_path]);
   for (int i=0; i<food_paths_len[id_path]; i++) {
-    set_number(etat->memoire, work_acces_direction(i), work_acces_direction(i+1), food_paths[id_path][i]);
+    set_number(etat->memoire, work_acces_direction(i), work_acces_direction(i+1), food_paths[id_path][i]-1);
   }
 }
 

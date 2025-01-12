@@ -39,17 +39,18 @@ void initialize_explorer(fourmi_etat *etat, int max_water){
   set_number(etat->memoire, octet(0), octet(1), EXPLORER); // type de fourmi
   set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION); // state
   set_number(etat->memoire, octet(2)-1, octet(2), 1); //forward
-  set_number(etat->memoire, octet(3), octet(4), 0); //result
+  set_number(etat->memoire, octet(3), octet(4), 0); //position
+  set_number(etat->memoire, octet(4), octet(5), 0); //result
   set_number(etat->memoire, octet(5), octet(6), max_water); // max_water
   set_number(etat->memoire, octet(6), octet(7), 0); // path_len
 }
 
 void handle_explorer_from_queen (fourmi_etat* etat, vector<int*> food_paths, vector<int> food_paths_len) {
-  if (get_number(etat->memoire, octet(3), octet(4))){
-    int path_len = get_number(etat->memoire, octet(6), octet(7));
+  if (get_number(etat->memoire, octet(4), octet(5))){ //result
+    int path_len = get_number(etat->memoire, octet(6), octet(7)); //path_len
     int* path = (int*) malloc(path_len*sizeof(int));
     food_paths.push_back(path);
-    food_paths_len.push_back(path_len);
+    food_paths_len.push_back(path_len+1);
   }
 }
 
@@ -77,9 +78,11 @@ fourmi_retour explorer_activation(fourmi_etat *etat, const salle *salle) {
           };
         }
         else if (salle->type == NOURRITURE && salle->pheromone == 0) {
+          position +=1;
+          set_number(etat->memoire, octet(3), octet(4), position); // position
           set_number(etat->memoire, octet(1), octet(2)-1, EXPLORER_ENDED_ACTION); //state
           set_number(etat->memoire, octet(2)-1, octet(2), 0); //forward
-          set_number(etat->memoire, octet(4), octet(5), 1); // success
+          set_number(etat->memoire, octet(4), octet(5), 1); // result = success
           set_number(etat->memoire, octet(6), octet(7), position); //path_len
           return {
             .action = RAMASSE_NOURRITURE,
