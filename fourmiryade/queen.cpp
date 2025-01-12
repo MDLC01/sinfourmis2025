@@ -8,8 +8,6 @@
 
 using namespace std;
 
-#define min(a,b) (a)<(b)?(a):(b)
-
 enum queen_turn_t {RECUP_TURN, RELEASE_TURN, BIRTH_TURN};
 queen_turn_t turn_type = BIRTH_TURN;
 

@@ -12,6 +12,9 @@ typedef uint8_t choice;
 typedef int node;
 typedef vector<choice> path;
 
+#define min(a, b) (a) < (b) ? (a) : (b)
+#define max(a, b) (a) > (b) ? (a) : (b)
+
 typedef enum {
     EXPLORER,
     CARTOGRAPHER,
