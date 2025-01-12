@@ -93,7 +93,7 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
           initialize_worker(&(fourmis[i]), food_paths, food_paths_len);
         }
       }
-      return {.action = ENVOYER_FOURMI, .arg=0};
+      return {.action = ENVOYER_FOURMI, .arg = (int32_t) nb_fourmis};
       turn_type = RECUP_TURN;
     }
   }
