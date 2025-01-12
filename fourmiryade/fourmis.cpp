@@ -44,6 +44,8 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
             assert(false);
         }
     }
+
+    assert(false);
 }
 
 

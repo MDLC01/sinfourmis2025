@@ -301,5 +301,6 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             assert(false);
         }
     }
-    return {};
+
+    assert(false);
 }
