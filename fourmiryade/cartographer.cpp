@@ -174,11 +174,22 @@ typedef enum {
 #define PREVIOUS_WATER_SIZE 5
 #define PATH_LENGTH_SIZE 8
 
+// Only accessed from the queen.
+static uint8_t present_cartographers[CARTOGRAPHER_COUNT] = {
+    0b00000001,
+    0b01000001,
+    0b10000001,
+    0b11000001,
+};
+static int present_cartographer_count = 4;
+
 void handle_cartographer_from_queen(fourmi_etat *ant) {
     rw rw = create_rw(ant->memoire);
-    rw.offset += TYPE_SIZE;
-    int previous_water = read_number(&rw, PREVIOUS_WATER_SIZE);
+    rw.offset += TYPE_SIZE + PREVIOUS_WATER_SIZE + CARTOGRAPHER_STATE_SIZE;
     align_rw(&rw);
+    rw.offset += CELL_ID_SIZE;
+    uint8_t cell_id = read_number(&rw, CELL_ID_SIZE);
+    present_cartographers[present_cartographer_count++] = cell_id;
     int path_length = read_number(&rw, PATH_LENGTH_SIZE);
     vector<choice> forward_path;
     vector<choice> backward_path;
@@ -209,8 +220,7 @@ void handle_cartographer_from_queen(fourmi_etat *ant) {
     add_identity(forward_path, backward_path, path_costs, ids, infos);
 }
 
-void initialize_cartographer(fourmi_etat *ant, int cartographer_id) {
-    assert(0 <= cartographer_id && cartographer_id < CARTOGRAPHER_COUNT);
+void initialize_cartographer(fourmi_etat *ant) {
     // Ideally, this should be done at init time. Oh well...
     is_known[BASE_NODE] = true;
     rw rw = create_rw(ant->memoire);
@@ -218,7 +228,7 @@ void initialize_cartographer(fourmi_etat *ant, int cartographer_id) {
     write_number(&rw, PREVIOUS_WATER_SIZE, 0); // Whatever.
     write_number(&rw, CARTOGRAPHER_STATE_SIZE, CARTOGRAPHER_STARTS);
     align_rw(&rw);
-    write_number(&rw, CELL_ID_SIZE, (cartographer_id << 6) + 1);
+    write_number(&rw, CELL_ID_SIZE, present_cartographers[--present_cartographer_count]);
     write_number(&rw, PATH_LENGTH_SIZE, 0);
 }
 
