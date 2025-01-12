@@ -104,8 +104,8 @@ class Queen {
         return team->get_food();
     }
 
-    unsigned int get_team_id() const {
-        return team->get_id();
+    unsigned int get_team_id(bool gala) const {
+        return team->get_id(gala);
     }
 
     Node *get_current_node() const {

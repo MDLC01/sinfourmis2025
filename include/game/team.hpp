@@ -30,7 +30,10 @@ class Team {
     std::string get_name() const {
         return name;
     }
-    unsigned int get_id() const {
+    unsigned int get_id(bool gala_mode) const {
+		if (gala && gala_mode) {
+			return 1;
+		}
         return id;
     }
 
@@ -42,11 +45,16 @@ class Team {
         return food;
     }
 
+	void set_gala(bool gala) {
+		this->gala = gala;
+	}
+
     // for json serialization / deserialization
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Team, id, name, color)
 
   private:
     unsigned int id = -1;
+	bool gala = false;
     std::string name = "";
     std::string color = "#000000";
     unsigned int food = 0;
