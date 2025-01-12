@@ -5,12 +5,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define MAX_NODES 1000
-#define BASE_NODE 0
+#define MAX_NODES 256
+#define UNKNOWN_NODE 0b00000000
+#define BASE_NODE 0b01000000
 
 typedef uint8_t choice;
-typedef int node;
+typedef uint8_t node;
 typedef vector<choice> path;
+
+#define min(a, b) (a) < (b) ? (a) : (b)
+#define max(a, b) (a) > (b) ? (a) : (b)
 
 typedef enum {
     EXPLORER,

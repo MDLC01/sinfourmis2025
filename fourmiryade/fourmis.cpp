@@ -31,7 +31,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 
     switch (read_type(&rw)) {
         case EXPLORER: {
-            return explorer_activation(etat, salle);
+            return explorer_activation(etat, &rw, salle);
         }
         case WORKER: {
             // TODO
@@ -40,10 +40,12 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
         case CARTOGRAPHER: {
             return cartographer_activation(etat, &rw, salle);
         }
-        default: {
+        case VARIANT_COUNT: {
             assert(false);
         }
     }
+
+    assert(false);
 }
 
 

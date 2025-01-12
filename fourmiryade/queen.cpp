@@ -1,14 +1,11 @@
 #include <cstdint>
-#include <map>
 #include "sinfourmis.h"
-#include "structures.cpp"
+#include "utils.cpp"
 #include "memory.cpp"
 
 
 
 using namespace std;
-
-#define min(a,b) (a)<(b)?(a):(b)
 
 enum queen_turn_t {RECUP_TURN, RELEASE_TURN, BIRTH_TURN};
 queen_turn_t turn_type = BIRTH_TURN;
@@ -48,7 +45,9 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
         // TODO : read worker memory
         break;
       }
-      default: {}
+      case VARIANT_COUNT: {
+        assert(false);
+      }
     }
     for  (int j=0; j<256; j++){
       fourmis[i].memoire[j] = 0;

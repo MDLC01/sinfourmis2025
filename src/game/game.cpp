@@ -63,7 +63,7 @@ void Game::fourmi_action(Ant *ant) {
 			}
             break;
         case fourmi_action::DEPLACEMENT:
-            if (ant->get_current_node()->degree() < (uint32_t)ant_result.arg) {
+            if (ant->get_current_node()->degree() <= (uint32_t)ant_result.arg) {
                 ant->set_result(-1);
             } else if (ant->get_action_state() != AntActionState::NONE) {
                 ant->set_result(-1);
@@ -240,6 +240,9 @@ void Game::queen_action(Queen *queen, std::vector<std::unique_ptr<Ant>> &ants) {
                 auto max_gathered = std::min(
                     (uint32_t)result.arg, queen->get_queen_stat(Queen::QueenStat::MAX_STORED_ANTS) - queen->stored_ants());
                 auto node_ants = node->get_team_ants(queen->get_team_id());
+				if (node_ants.size() == 0) {
+					queen->set_result(0);
+				}
                 for (auto it = node_ants.begin(); it != node_ants.end() && gathered < max_gathered;
                      it++) {
                     if (!(*it)->alive() || (*it)->get_action_state() == AntActionState::MOVING) {
