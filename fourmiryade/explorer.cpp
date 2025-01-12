@@ -33,7 +33,7 @@ typedef enum {
 
 // memory of a explorer : state, forward, position, path_length, mem
 #define EXPLORER_HEADER_END octet(7)
-#define exp_acces_direction(pos) EXPLORER_HEADER_END + octet(pos)
+#define exp_acces_direction(pos) (EXPLORER_HEADER_END + octet(pos))
 
 void initialize_explorer(fourmi_etat *etat, int max_water){
   set_number(etat->memoire, octet(0), octet(1), EXPLORER); // type de fourmi
