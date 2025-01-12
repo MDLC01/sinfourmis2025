@@ -123,7 +123,6 @@ path shortest_path(node source, node destination) {
 void add_identity(path forward_path, path backward_path, vector<int> path_costs, vector<cartographer_node_info> infos) {
     vector<node> news = {};
     node previous = BASE_NODE;
-    // FIXME: What happens with `i = 0`?
     for (int i = 1; i < forward_path.size(); i++) {
         path prefix(forward_path.begin(), forward_path.begin() + i);
 
