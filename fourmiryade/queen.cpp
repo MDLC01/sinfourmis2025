@@ -63,7 +63,7 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
   switch (turn_type) {
     case RECUP_TURN:{
       turn_type = BIRTH_TURN;
-      return {.action = RECUPERER_FOURMI, .arg=0};
+      return {.action = RECUPERER_FOURMI, .arg = (int) etat->max_stockage - (int) nb_fourmis};
     }
     case BIRTH_TURN : {
       turn_type = RELEASE_TURN;
