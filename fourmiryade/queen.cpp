@@ -28,7 +28,7 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
     nb_explorer = (etat->nourriture/4);
   }
   if (turn_count == 100) {
-    nb_cartographer = 4;
+    nb_cartographer = CARTOGRAPHER_COUNT;
   }
   turn_count +=1;
   nourriture_a_depenser += (etat->nourriture - ancien_compte_nourriture) / 2;
