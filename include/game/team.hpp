@@ -32,7 +32,7 @@ class Team {
     }
     unsigned int get_id(bool gala_mode) const {
 		if (gala && gala_mode) {
-			return 0;
+			return 1;
 		}
         return id;
     }
