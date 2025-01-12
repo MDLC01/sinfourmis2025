@@ -118,7 +118,7 @@ bool Map::load_nodes(const json &data) {
     return true;
 }
 
-bool Map::load(const std::string_view &filename) {
+bool Map::load(const std::string_view &filename, bool gala) {
     std::ifstream file(filename.data());
     if (!file.is_open()) {
         std::cerr << "Failed to open file: " << filename << std::endl;
@@ -152,6 +152,9 @@ bool Map::load(const std::string_view &filename) {
     }
 	for (auto &team: teams) {
 		team.add_food(base_food);
+		if (gala) {
+			team.set_id(0);
+		}
 	}
 
     if (!load_nodes(data)) {

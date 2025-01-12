@@ -42,6 +42,10 @@ class Team {
         return food;
     }
 
+	void set_id(unsigned int id) {
+		this->id = id;
+	}
+
     // for json serialization / deserialization
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Team, id, name, color)
 
