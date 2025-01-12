@@ -31,7 +31,7 @@ fourmi_retour cpp_fourmi_activation(fourmi_etat *etat, const salle *salle) {
 
     switch (read_type(&rw)) {
         case EXPLORER: {
-            return explorer_activation(etat, salle);
+            return explorer_activation(etat, &rw, salle);
         }
         case WORKER: {
             // TODO

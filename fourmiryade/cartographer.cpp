@@ -22,7 +22,7 @@ static map<path, node> known_paths;
 // `adj[u][v]` indicates what choice to make to go from `u` to `v`.
 static int adj[MAX_NODES][MAX_NODES] = {0};
 static int costs[MAX_NODES][MAX_NODES] = {0};
-static cartographer_node_info node_infos[MAX_NODES] = {0};
+static cartographer_node_info node_infos[MAX_NODES];
 static node node_count = 1;
 
 cartographer_node_info unify_node_info(cartographer_node_info lhs, cartographer_node_info rhs) {
@@ -78,21 +78,19 @@ void unify_nodes(node m, node n) {
 
 // Computes the shortest path between two nodes (given the information we have).
 path shortest_path(node source, node destination) {
-    float dist[node_count];
-    node prev[node_count];
+    vector<float> dist(node_count, 1.0 / 0.0);
+    vector<node> prev(node_count, -1);
     vector<node> queue;
     for (node n = 0; n < node_count; n++) {
-        dist[n] = 1.0 / 0.0;
-        prev[n] = -1;
         queue.push_back(n);
     }
-     dist[source] = 0.0;
+    dist[source] = 0.0;
 
     while (!queue.empty()) {
         int index = -1;
         node u = -1;
         float min_distance = 1.0 / 0.0;
-        for (int i = 0; i < queue.size(); i++) {
+        for (int i = 0; i < (int) queue.size(); i++) {
             if (dist[queue[i]] < min_distance) {
                 index = i;
                 u = queue[i];
@@ -123,11 +121,11 @@ path shortest_path(node source, node destination) {
 void add_identity(path forward_path, path backward_path, vector<int> path_costs, vector<cartographer_node_info> infos) {
     vector<node> news = {};
     node previous = BASE_NODE;
-    for (int i = 1; i < forward_path.size(); i++) {
+    for (int i = 1; i < (int) forward_path.size(); i++) {
         path prefix(forward_path.begin(), forward_path.begin() + i);
 
         auto result = known_paths.find(prefix);
-        bool is_base = i == forward_path.size() - 1;
+        bool is_base = i == (int) forward_path.size() - 1;
 
         if (is_base) {
             adj[previous][BASE_NODE] = prefix.back();
@@ -150,7 +148,7 @@ void add_identity(path forward_path, path backward_path, vector<int> path_costs,
             node_infos[previous] = unify_node_info(node_infos[previous], infos[i + 1]);
         }
     }
-    for (int i = 1; i < backward_path.size(); i++) {
+    for (int i = 1; i < (int) backward_path.size(); i++) {
         if (news.empty()) {
             break;
         }
@@ -309,4 +307,5 @@ fourmi_retour cartographer_activation(fourmi_etat *etat, rw *rw, const salle *sa
             assert(false);
         }
     }
+    return {};
 }

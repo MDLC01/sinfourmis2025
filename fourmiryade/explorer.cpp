@@ -107,6 +107,7 @@ fourmi_retour explorer_activation(fourmi_etat *etat, rw *rw, const salle *salle)
                     assert(false);
                 }
             }
+            break;
         }
 
 
@@ -144,4 +145,5 @@ fourmi_retour explorer_activation(fourmi_etat *etat, rw *rw, const salle *salle)
             assert(false);
         }
     }
+    return {};
 }
