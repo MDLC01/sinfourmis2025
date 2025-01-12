@@ -79,7 +79,7 @@ reine_retour queen_main(fourmi_etat fourmis[], const unsigned int nb_fourmis, co
       for (unsigned int i=0; i<nb_fourmis; i++) {
         if (nb_cartographer != 0) {
           nb_cartographer --;
-          initialize_cartographer(&(fourmis[i]), rand()%4);
+          initialize_cartographer(&(fourmis[i]));
         }
         else if (nb_explorer != 0) {
           nb_explorer --;
